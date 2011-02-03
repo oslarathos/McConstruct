@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.langricr.mcmachina.McMachina;
+import org.langricr.util.FileClassLoader;
 
 public class ConstructLoader {
 	private static ConstructLoader _instance = new ConstructLoader();
@@ -17,7 +18,7 @@ public class ConstructLoader {
 	
 	private final File folder = new File( McMachina.getInstance().getDataFolder(), "Classes" );
 	private Map< String, Class< ? > > classes = new HashMap< String, Class< ? > >();
-	private URLClassLoader urlcl = null;
+	private FileClassLoader urlcl = null;
 	
 	private ConstructLoader() {
 		if ( !( folder.exists() ) )
@@ -34,7 +35,7 @@ public class ConstructLoader {
 		classes.clear();
 		
 		try {
-			urlcl = new URLClassLoader( new URL[] { folder.toURI().toURL() }, Construct.class.getClassLoader() );
+			urlcl = new FileClassLoader( new URL[] { folder.toURI().toURL() }, Construct.class.getClassLoader() );
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			
@@ -46,8 +47,6 @@ public class ConstructLoader {
 			
 			try {
 				reloadClass( file );
-				
-				System.out.print( "  OK" );
 			} catch ( Exception e ) {
 				System.out.print( e.getMessage() );
 			}
@@ -58,19 +57,25 @@ public class ConstructLoader {
 		System.out.println( "Loaded " + classes.size() + " classes." );
 	}
 	
-	public synchronized void reloadClass( File file ) throws Exception {
-		if ( file.getName().contains( "$" ) )
-			throw new Exception( "NEST" );
+	public synchronized void reloadClass( File file ) throws Exception {		
+		if ( file.isDirectory() || !( file.getName().endsWith( ".class" ) ) ) {
+			System.out.print( "SKIP" );
 		
-		if ( file.isDirectory() || !( file.getName().endsWith( ".class" ) ) )
-			throw new Exception( "SKIP" );
+			return;
+		}
 		
-		Class< ? > clazz = urlcl.loadClass( file.getName().substring( 0, file.getName().indexOf( ".class" ) ) );
+		Class< ? > clazz = urlcl.createClass( file );
 		
-		if ( clazz == null || !( Construct.class.isAssignableFrom( clazz ) ) )
-			throw new Exception( " BAD" );
+		if ( clazz == null ) {
+			System.out.print( "NULL" );
 		
-		classes.put( clazz.getName(), clazz );
+			return;
+		}
+		
+		System.out.print( "  OK" );
+		
+		if ( Construct.class.isAssignableFrom( clazz ) )
+			classes.put( clazz.getName(), clazz );
 	}
 	
 	public synchronized Class< ? > getClass( String classname ) {
