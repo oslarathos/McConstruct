@@ -6,19 +6,17 @@ import org.bukkit.event.block.BlockEvent;
 import org.langricr.mcmachina.event.Event;
 
 public class CBlockEvent extends Event implements Cancellable {
-	private final Block block;
 	private boolean state;
 	private final BlockEvent event;
 	
-	public CBlockEvent( Type type, Block block, BlockEvent event ) {
+	public CBlockEvent( Type type, BlockEvent event ) {
 		super( type );
 		
-		this.block = block;
 		this.event = event;
 	}
 	
 	public final Block getBlock() {
-		return block;
+		return event.getBlock();
 	}
 	
 	public BlockEvent getEvent() {

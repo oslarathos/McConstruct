@@ -6,17 +6,19 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRightClickEvent;
+import org.langricr.mcmachina.construct.ConstructLoader;
 import org.langricr.mcmachina.construct.ConstructManager;
 import org.langricr.mcmachina.construct.blueprint.Blueprint;
 import org.langricr.mcmachina.construct.blueprint.BlueprintManager;
 import org.langricr.mcmachina.event.EventListener;
 import org.langricr.mcmachina.event.block.CBlockDamageEvent;
 import org.langricr.mcmachina.event.block.CBlockPlaceEvent;
+import org.langricr.mcmachina.event.block.CBlockRightClickEvent;
 import org.langricr.util.Coordinate;
 
 public class MMBlockListener extends BlockListener {
 	public void onBlockDamage( BlockDamageEvent bde ) {
-		CBlockDamageEvent cbde = new CBlockDamageEvent( bde.getBlock(), bde.getDamageLevel(), bde );
+		CBlockDamageEvent cbde = new CBlockDamageEvent( bde );
 		
 		EventListener.getInstance().callEvent( cbde );
 		
@@ -24,7 +26,7 @@ public class MMBlockListener extends BlockListener {
 	}
 	
 	public void onBlockPlace( BlockPlaceEvent bpe ) {
-		CBlockPlaceEvent cbpe = new CBlockPlaceEvent( bpe.getBlock(), bpe );
+		CBlockPlaceEvent cbpe = new CBlockPlaceEvent( bpe );
 		
 		EventListener.getInstance().callEvent( cbpe );
 		
@@ -32,6 +34,8 @@ public class MMBlockListener extends BlockListener {
 	}
 	
 	public void onBlockRightClick( BlockRightClickEvent brce ) {
+		CBlockRightClickEvent cbrce = new CBlockRightClickEvent( brce );
+		
 		if ( brce.getBlockAgainst().getType().equals( Material.GLOWSTONE ) && brce.getItemInHand().getType().equals( Material.GLOWSTONE_DUST ) ) {
 			Coordinate target = new Coordinate( brce.getBlockAgainst() );
 			
@@ -42,6 +46,15 @@ public class MMBlockListener extends BlockListener {
 			
 			if ( blueprint == null )
 				return;
+			
+			Class< ? > clazz = ConstructLoader.getInstance().getClass( blueprint.getClassname() );
+			
+			if ( clazz == null )
+				return;
+			
+			ConstructManager.getInstance().createConstruct( target, clazz );
+		} else {
+			EventListener.getInstance().callEvent( cbrce );
 		}
 	}
 }

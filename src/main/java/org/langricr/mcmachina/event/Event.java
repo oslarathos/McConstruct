@@ -18,6 +18,7 @@ public abstract class Event {
 		CONSTRUCT_SAVE,
 		CONSTRUCT_LOAD,
 		BLOCK_DAMAGED,
-		BLOCK_PLACED;
+		BLOCK_PLACED,
+		BLOCK_RIGHTCLICKED;
 	}
 }
