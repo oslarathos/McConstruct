@@ -1,10 +1,12 @@
 package org.langricr.mcmachina.event.construct;
 
+import org.bukkit.event.Cancellable;
 import org.langricr.mcmachina.construct.Construct;
 import org.langricr.mcmachina.event.Event;
 
-public class ConstructEvent extends Event {
+public class ConstructEvent extends Event implements Cancellable {
 	private final Construct _construct;
+	private boolean cancelled = false;
 	
 	public ConstructEvent( Type type, Construct construct ) {
 		super( type );
@@ -14,5 +16,13 @@ public class ConstructEvent extends Event {
 	
 	public final Construct getConstruct() {
 		return _construct;
+	}
+
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
+	public void setCancelled( boolean state ) {
+		cancelled = state;
 	}
 }

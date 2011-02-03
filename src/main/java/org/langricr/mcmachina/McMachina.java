@@ -34,5 +34,4 @@ public class McMachina extends JavaPlugin {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.langricr.mcmachina.Utils;
+import org.langricr.util.Coordinate;
 
 public class Blueprint {
 	private final File file;
@@ -29,6 +31,15 @@ public class Blueprint {
 	public void addPoint( BlueprintPoint point ) {
 		if ( !( points.contains( point ) ) )
 			points.add( point );
+	}
+	
+	public boolean isValid( Coordinate coord ) {
+		for ( BlueprintPoint point : points ) {
+			if ( point.getMaterial() != null && !( Utils.getBlockAt( coord.offset( point ) ).getType().equals( point.getMaterial() ) ) )
+				return false;
+		}
+		
+		return true;
 	}
 	
 	public static Blueprint loadBlueprint( File file ) {

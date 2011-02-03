@@ -2,6 +2,8 @@ package org.langricr.util;
 
 import java.io.Serializable;
 
+import org.bukkit.block.Block;
+
 public class Coordinate implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1L;
 	
@@ -13,6 +15,10 @@ public class Coordinate implements Serializable, Cloneable {
 		_x = x;
 		_y = y;
 		_z = z;
+	}
+	
+	public Coordinate( Block block ) {
+		this( block.getX(), block.getY(), block.getZ() );
 	}
 	
 	public Coordinate offset( int x, int y, int z ) {
