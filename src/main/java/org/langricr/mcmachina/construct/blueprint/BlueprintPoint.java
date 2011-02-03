@@ -17,4 +17,8 @@ public class BlueprintPoint extends Coordinate {
 	public Material getMaterial() {
 		return _material;
 	}
+	
+	public String toString() {
+		return "BlueprintPoint( " + getX() + "," + getY() + "," + getZ() + "," + _material.name() + ")";
+	}
 }

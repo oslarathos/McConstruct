@@ -9,6 +9,9 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.langricr.mcmachina.construct.ConstructLoader;
+import org.langricr.mcmachina.construct.ConstructManager;
+import org.langricr.mcmachina.construct.blueprint.BlueprintManager;
 import org.langricr.mcmachina.listeners.MMBlockListener;
 
 public class McMachina extends JavaPlugin {
@@ -42,5 +45,15 @@ public class McMachina extends JavaPlugin {
 		pm.registerEvent( Type.BLOCK_PLACED, blockListener, Priority.High, this );
 		pm.registerEvent( Type.BLOCK_DAMAGED, blockListener, Priority.High, this );
 		pm.registerEvent( Type.BLOCK_RIGHTCLICKED, blockListener, Priority.High, this );
+		
+		System.out.println( "\nDirectories" );
+		System.out.println( getDataFolder().getPath() );
+		System.out.println( ConstructLoader.getInstance().getFolder().getPath() );
+		System.out.println( BlueprintManager.getInstance().getFolder().getPath() );
+		System.out.println( ConstructManager.getInstance().getFolder().getPath() );
+		System.out.println( "\nStartup" );
+		ConstructLoader.getInstance().reloadClasses();
+		BlueprintManager.getInstance().reloadBlueprints();
+		ConstructManager.getInstance().loadAllConstructs();
 	}
 }

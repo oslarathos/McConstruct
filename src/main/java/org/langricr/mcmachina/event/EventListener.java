@@ -1,5 +1,6 @@
 package org.langricr.mcmachina.event;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,9 @@ public class EventListener {
 	private Map< ConstructEvent.Type, List< Construct > > _listeners = new EnumMap< ConstructEvent.Type, List< Construct > >( ConstructEvent.Type.class );
 	
 	private EventListener() {
+		for ( Type type : Type.values() ) {
+			_listeners.put( type, new ArrayList< Construct >() );
+		}
 	}
 	
 	public void registerConstructEvent( Construct construct, Type type ) {

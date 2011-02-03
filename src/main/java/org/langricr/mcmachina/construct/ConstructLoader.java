@@ -24,13 +24,17 @@ public class ConstructLoader {
 			folder.mkdir();
 	}
 	
+	public final File getFolder() {
+		return folder;
+	}
+	
 	public synchronized void reloadClasses() {
 		System.out.println( "Reloading construct classes." );
 		
 		classes.clear();
 		
 		try {
-			urlcl = new URLClassLoader( new URL[] { folder.toURI().toURL() } );
+			urlcl = new URLClassLoader( new URL[] { folder.toURI().toURL() }, Construct.class.getClassLoader() );
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			
@@ -38,23 +42,25 @@ public class ConstructLoader {
 		}
 		
 		for ( File file : folder.listFiles() ) {
+			System.out.print( "\t" );
+			
 			try {
-				System.out.print( "LOADING " + file.getName().toUpperCase() + "... " );
-				
 				reloadClass( file );
 				
-				System.out.println( "OK" );
+				System.out.print( "  OK" );
 			} catch ( Exception e ) {
-				System.out.println( e.getMessage() );
-				
-				continue;
+				System.out.print( e.getMessage() );
 			}
+			
+			System.out.println( "... " + file.getName() );
 		}
+		
+		System.out.println( "Loaded " + classes.size() + " classes." );
 	}
 	
 	public synchronized void reloadClass( File file ) throws Exception {
 		if ( file.getName().contains( "$" ) )
-			throw new Exception( "NESTED" );
+			throw new Exception( "NEST" );
 		
 		if ( file.isDirectory() || !( file.getName().endsWith( ".class" ) ) )
 			throw new Exception( "SKIP" );
@@ -62,7 +68,7 @@ public class ConstructLoader {
 		Class< ? > clazz = urlcl.loadClass( file.getName().substring( 0, file.getName().indexOf( ".class" ) ) );
 		
 		if ( clazz == null || !( Construct.class.isAssignableFrom( clazz ) ) )
-			throw new Exception( "NOT ASSIGNABLE" );
+			throw new Exception( " BAD" );
 		
 		classes.put( clazz.getName(), clazz );
 	}

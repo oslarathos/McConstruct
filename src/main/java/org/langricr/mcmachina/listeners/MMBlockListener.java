@@ -44,8 +44,12 @@ public class MMBlockListener extends BlockListener {
 			
 			Blueprint blueprint = BlueprintManager.getInstance().scanCoordinate( new Coordinate( brce.getBlockAgainst() ) );
 			
+			System.out.println( "Matching blueprint..." );
+			
 			if ( blueprint == null )
 				return;
+			
+			System.out.println( "MATCHED: " + blueprint.getClassname() );
 			
 			Class< ? > clazz = ConstructLoader.getInstance().getClass( blueprint.getClassname() );
 			

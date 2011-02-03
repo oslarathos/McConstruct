@@ -32,21 +32,28 @@ public class BlueprintManager {
 		blueprints.clear();
 		
 		for ( File file : folder.listFiles() ) {
-			System.out.print( "Loading " + file.getName() + "... " );
+			System.out.print( "\t" );
 			
 			Blueprint blueprint = Blueprint.loadBlueprint( file );
 			
 			if ( blueprint != null ) {
-				System.out.println( "OK" );
+				System.out.print( "  OK" );
+				
 				blueprints.add( blueprint );
 			} else {
-				System.out.println( "BAD" );
+				System.out.print( " BAD" );
 			}
+			
+			System.out.println( "... " + file.getName() );
 		}
+		
+		System.out.println( "Loaded " + blueprints.size() + " blueprints." );
 	}
 	
 	public synchronized Blueprint scanCoordinate( Coordinate coord ) {
 		for ( Blueprint blueprint : blueprints ) {
+			System.out.println( "Checking: " + blueprint.getClassname() );
+			
 			if ( blueprint.isValid( coord ) )
 				return blueprint;
 		}

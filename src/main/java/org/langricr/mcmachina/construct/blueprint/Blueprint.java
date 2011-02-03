@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.langricr.mcmachina.Utils;
 import org.langricr.util.Coordinate;
 
@@ -35,8 +36,13 @@ public class Blueprint {
 	
 	public boolean isValid( Coordinate coord ) {
 		for ( BlueprintPoint point : points ) {
-			if ( point.getMaterial() != null && !( Utils.getBlockAt( coord.offset( point ) ).getType().equals( point.getMaterial() ) ) )
+			Block block = Utils.getBlockAt( coord.offset( point ) );
+			
+			if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) ) {
+				System.out.println( "FAILED MATCH: " + block.getType().name() + " to " + point.toString() );
+				
 				return false;
+			}
 		}
 		
 		return true;
@@ -62,10 +68,10 @@ public class Blueprint {
 				
 				blueprint.addPoint(
 					new BlueprintPoint(
-						Integer.parseInt( contents[ 0 ] ),
-						Integer.parseInt( contents[ 1 ] ),
-						Integer.parseInt( contents[ 2 ] ),
-						contents[ 3 ].equalsIgnoreCase( "*" ) ? null : Material.getMaterial( contents[ 3 ] )
+						Integer.parseInt( contents[ 0 ].trim() ),
+						Integer.parseInt( contents[ 1 ].trim() ),
+						Integer.parseInt( contents[ 2 ].trim() ),
+						contents[ 3 ].trim().equalsIgnoreCase( "*" ) ? null : Material.getMaterial( contents[ 3 ].trim() )
 					)
 				);
 			}
