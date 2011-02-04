@@ -34,6 +34,19 @@ public class Blueprint {
 			points.add( point );
 	}
 	
+	public BlueprintPoint getPoint( Coordinate core, Block block ) {
+		for ( BlueprintPoint point : points ) {
+			if ( point.equals( core.getOffset( new Coordinate( block ) ) ) )
+				return point;
+		}
+		
+		return null;
+	}
+	
+	public List< BlueprintPoint > getPoints() {
+		return points;
+	}
+	
 	public boolean isValid( Coordinate coord ) {
 		for ( BlueprintPoint point : points ) {
 			Block block = Utils.getBlockAt( coord.offset( point ) );

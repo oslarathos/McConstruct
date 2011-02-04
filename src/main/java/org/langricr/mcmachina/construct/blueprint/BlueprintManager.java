@@ -60,4 +60,13 @@ public class BlueprintManager {
 		
 		return null;
 	}
+	
+	public synchronized Blueprint getBlueprint( String classname ) {
+		for ( Blueprint blueprint : blueprints ) {
+			if ( blueprint.getClassname().equalsIgnoreCase( classname ) )
+				return blueprint;
+		}
+		
+		return null;
+	}
 }
