@@ -30,23 +30,23 @@ public class EventListener {
 		}
 	}
 	
-	public void registerConstructEvent( Construct construct, Type type ) {
+	public synchronized void registerConstructEvent( Construct construct, Type type ) {
 		if ( !( _listeners.get( type ).contains( construct ) ) )
 			_listeners.get( type ).add( construct );
 	}
 	
-	public void unregisterConstructEvent( Construct construct, Type type ) {
+	public synchronized void unregisterConstructEvent( Construct construct, Type type ) {
 		if ( _listeners.get( type ).contains( construct ) )
 			_listeners.get( type ).remove( construct );
 	}
 	
-	public void unregisterConstruct( Construct construct ) {
+	public synchronized void unregisterConstruct( Construct construct ) {
 		for ( Type type : Type.values() ) {
 			unregisterConstructEvent( construct, type );
 		}
 	}
 	
-	public Event callEvent( Event event ) {
+	public synchronized Event callEvent( Event event ) {
 		for ( Construct construct : _listeners.get( event.getType() ) ) {
 			switch ( event.getType() ) {
 				case CONSTRUCT_CREATE:

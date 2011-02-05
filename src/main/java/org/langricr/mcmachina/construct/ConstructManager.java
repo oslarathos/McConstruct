@@ -66,8 +66,11 @@ public class ConstructManager {
 		
 		EventListener.getInstance().callEvent( cde );
 		
-		if ( !( cde.isCancelled() ) )
+		if ( !( cde.isCancelled() ) ) {
+			constructs.remove( construct.getCore() );
+			
 			EventListener.getInstance().unregisterConstruct( construct );
+		}
 	}
 	
 	public synchronized void destroyConstruct( Construct construct ) {

@@ -16,8 +16,6 @@ import org.langricr.mcmachina.event.EventListener;
 import org.langricr.mcmachina.event.block.CBlockDamageEvent;
 import org.langricr.mcmachina.event.block.CBlockPlaceEvent;
 import org.langricr.mcmachina.event.block.CBlockRightClickEvent;
-import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
-import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
 import org.langricr.util.Coordinate;
 
 public class MMBlockListener extends BlockListener {
@@ -25,14 +23,8 @@ public class MMBlockListener extends BlockListener {
 		if ( bde.getDamageLevel() == BlockDamageLevel.BROKEN && bde.getBlock().getType() == Material.GLOWSTONE ) {
 			Construct construct = ConstructManager.getInstance().getConstruct( new Coordinate( bde.getBlock() ) );
 			
-			if ( construct != null ) {
-				ConstructDestroyEvent cde = new ConstructDestroyEvent( construct );
-				
-				EventListener.getInstance().callEvent( cde );
-				
-				if ( cde.isCancelled() == true )
-					return;
-			}
+			if ( construct != null )
+				ConstructManager.getInstance().destroyConstruct( construct );
 		}
 		
 		CBlockDamageEvent cbde = new CBlockDamageEvent( bde );
