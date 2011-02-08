@@ -25,15 +25,15 @@ public class ConstructManager {
 	}
 	
 	private final File folder = new File( McMachina.getInstance().getDataFolder(), "Data" );
-	private final File storage = new File( folder, "Storage" );
+	private final File data = new File( folder, "Data" );
 	private Map< WorldCoordinate, Construct > constructs = new HashMap< WorldCoordinate, Construct >();
 	
 	private ConstructManager() {
 		if ( !( folder.exists() ) )
 			folder.mkdir();
 		
-		if ( !( storage.exists() ) )
-			storage.mkdir();
+		if ( !( data.exists() ) )
+			data.mkdir();
 	}
 	
 	public final File getFolder() {
@@ -96,7 +96,7 @@ public class ConstructManager {
 			Construct c = ( Construct ) clazz.getConstructor( WorldCoordinate.class ).newInstance( coord );
 			
 			// We'll then create an event to load the construct, this allows the construct to do some additional loading.
-			ConstructLoadEvent cle = new ConstructLoadEvent( c, new File( storage, file.getName() + ".ini" ) );
+			ConstructLoadEvent cle = new ConstructLoadEvent( c, new File( data, file.getName() + ".ini" ) );
 			
 			// And call it
 			EventListener.getInstance().callEvent( cle );
@@ -109,6 +109,12 @@ public class ConstructManager {
 		}
 	}
 
+	public synchronized void saveAllConstructs() {
+		for ( Construct construct : constructs.values() ) {
+			saveConstruct( construct );
+		}
+	}
+	
 	public synchronized void saveConstruct( Construct construct ) {
 		try {
 			// Defining the file based on the constructs UUID.
@@ -119,7 +125,7 @@ public class ConstructManager {
 				file.createNewFile();
 			
 			// We'll create the event first
-			ConstructSaveEvent cde = new ConstructSaveEvent( construct, new File( storage, file.getName() + ".ini" ) );
+			ConstructSaveEvent cde = new ConstructSaveEvent( construct, new File( data, file.getName() + ".ini" ) );
 			
 			// And call all listeners
 			EventListener.getInstance().callEvent( cde );

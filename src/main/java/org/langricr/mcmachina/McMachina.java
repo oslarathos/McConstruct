@@ -35,7 +35,7 @@ public class McMachina extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		
+		ConstructManager.getInstance().saveAllConstructs();
 	}
 
 	public void onEnable() {
