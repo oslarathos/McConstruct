@@ -1,5 +1,7 @@
 package org.langricr.mcmachina.construct;
 
+import java.util.UUID;
+
 import org.langricr.mcmachina.event.block.CBlockDamageEvent;
 import org.langricr.mcmachina.event.block.CBlockPlaceEvent;
 import org.langricr.mcmachina.event.construct.ConstructCreateEvent;
@@ -11,6 +13,7 @@ import org.langricr.util.WorldCoordinate;
 
 public class Construct {
 	private final WorldCoordinate core;
+	private final UUID uuid = UUID.randomUUID();
 	
 	public Construct( WorldCoordinate core ) {
 		this.core = core;
@@ -18,6 +21,10 @@ public class Construct {
 	
 	public final WorldCoordinate getCore() {
 		return core;
+	}
+	
+	public final UUID getUUID() {
+		return uuid;
 	}
 	
 	public void onCreate( ConstructCreateEvent cce ) {}

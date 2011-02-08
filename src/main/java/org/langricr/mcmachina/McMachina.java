@@ -35,7 +35,6 @@ public class McMachina extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		// TODO Auto-generated method stub
 		
 	}
 
