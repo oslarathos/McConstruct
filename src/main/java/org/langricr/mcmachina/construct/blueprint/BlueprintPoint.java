@@ -8,7 +8,7 @@ public class BlueprintPoint extends Coordinate {
 
 	private Material _material = null;
 	
-	public BlueprintPoint(int x, int y, int z, Material material ) {
+	public BlueprintPoint( int x, int y, int z, Material material ) {
 		super(x, y, z);
 		
 		_material = material;
@@ -20,5 +20,20 @@ public class BlueprintPoint extends Coordinate {
 	
 	public String toString() {
 		return "BlueprintPoint( " + getX() + "," + getY() + "," + getZ() + "," + _material.name() + ")";
+	}
+	
+	public boolean equals( Object o ) {
+		if ( o == null ) return false;
+		if ( !( o instanceof BlueprintPoint ) ) return false;
+		return o.hashCode() == hashCode();
+	}
+	
+	public int hashCode() {
+		int code = 0;
+		
+		code += super.hashCode();
+		code += getMaterial().hashCode();
+		
+		return code;
 	}
 }

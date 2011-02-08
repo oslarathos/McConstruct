@@ -21,6 +21,12 @@ public class Coordinate implements Serializable, Cloneable {
 		this( block.getX(), block.getY(), block.getZ() );
 	}
 	
+	public Coordinate( Coordinate coord ) {
+		_x = coord.getX();
+		_y = coord.getY();
+		_z = coord.getZ();
+	}
+	
 	public Coordinate offset( int x, int y, int z ) {
 		return new Coordinate( getX() + x, getY() + y, getZ() + z );
 	}
@@ -32,6 +38,7 @@ public class Coordinate implements Serializable, Cloneable {
 	public Coordinate getOffset( Coordinate coord ) {
 		return new Coordinate( getX() - coord.getX(), getY() - coord.getY(), getZ() - coord.getZ() );
 	}
+	
 	
 	public int getX() {
 		return _x;

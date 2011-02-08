@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.langricr.mcmachina.Utils;
 import org.langricr.util.Coordinate;
+import org.langricr.util.WorldCoordinate;
 
 public class Blueprint {
 	private final File file;
@@ -47,13 +48,13 @@ public class Blueprint {
 		return points;
 	}
 	
-	public boolean isValid( Coordinate coord ) {
+	public boolean isValid( WorldCoordinate core ) {
+		// Cycling through all points
 		for ( BlueprintPoint point : points ) {
-			Block block = Utils.getBlockAt( coord.offset( point ) );
+			// Getting the block.
+			Block block = Utils.getBlockAt( core.offset( point ) );
 			
 			if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) ) {
-				System.out.println( "FAILED MATCH: " + block.getType().name() + " to " + point.toString() );
-				
 				return false;
 			}
 		}
@@ -63,20 +64,26 @@ public class Blueprint {
 	
 	public static Blueprint loadBlueprint( File file ) {
 		try {
-			
+			// Opening the file readers
 			FileReader fr = new FileReader( file );
 			BufferedReader br = new BufferedReader( fr );
 			
+			// Getting the first line
 			String line = br.readLine();
 			
+			// Determining the class
 			String classname = line.substring( line.indexOf( "=" ) + 1 );
 			
+			// Creating a new blueprint
 			Blueprint blueprint = new Blueprint( file, classname );
 			
+			// Reading the blueprint
 			while ( ( line = br.readLine() ) != null ) {
+				// Checking if the line is a point
 				if ( !( line.startsWith( ":point(" ) ) && !( line.endsWith( ");" ) ) )
 					continue;
 				
+				// Splitting the string
 				String[] contents = line.substring( line.indexOf( "(" ) + 1, line.indexOf( ")" ) ).split( "," );
 				
 				blueprint.addPoint(
@@ -85,9 +92,14 @@ public class Blueprint {
 						Integer.parseInt( contents[ 1 ].trim() ),
 						Integer.parseInt( contents[ 2 ].trim() ),
 						contents[ 3 ].trim().equalsIgnoreCase( "*" ) ? null : Material.getMaterial( contents[ 3 ].trim() )
+							// Checking if the material is wild, getting the material if not.
 					)
 				);
 			}
+			
+			// Closing the readers.
+			br.close();
+			fr.close();
 			
 			return blueprint;
 		} catch ( Exception e ) {

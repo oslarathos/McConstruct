@@ -7,16 +7,16 @@ import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
 import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
 import org.langricr.mcmachina.event.construct.ConstructLoadEvent;
 import org.langricr.mcmachina.event.construct.ConstructSaveEvent;
-import org.langricr.util.Coordinate;
+import org.langricr.util.WorldCoordinate;
 
 public class Construct {
-	private final Coordinate core;
+	private final WorldCoordinate core;
 	
-	public Construct( Coordinate core ) {
+	public Construct( WorldCoordinate core ) {
 		this.core = core;
 	}
 	
-	public final Coordinate getCore() {
+	public final WorldCoordinate getCore() {
 		return core;
 	}
 	

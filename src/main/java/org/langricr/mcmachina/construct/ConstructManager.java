@@ -10,6 +10,7 @@ import org.langricr.mcmachina.event.construct.ConstructCreateEvent;
 import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
 import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
 import org.langricr.util.Coordinate;
+import org.langricr.util.WorldCoordinate;
 
 public class ConstructManager {
 	private static ConstructManager _instance = new ConstructManager();
@@ -19,7 +20,7 @@ public class ConstructManager {
 	}
 	
 	private final File folder = new File( McMachina.getInstance().getDataFolder(), "Saves" );
-	private Map< Coordinate, Construct > constructs = new HashMap< Coordinate, Construct >();
+	private Map< WorldCoordinate, Construct > constructs = new HashMap< WorldCoordinate, Construct >();
 	
 	private ConstructManager() {
 		if ( !( folder.exists() ) )
@@ -82,7 +83,7 @@ public class ConstructManager {
 			deleteConstruct( construct );
 	}
 	
-	public synchronized Construct getConstruct( Coordinate coord ) {
+	public synchronized Construct getConstruct( WorldCoordinate coord ) {
 		return constructs.get( coord );
 	}
 }

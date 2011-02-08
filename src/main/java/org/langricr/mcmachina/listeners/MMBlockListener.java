@@ -16,12 +16,12 @@ import org.langricr.mcmachina.event.EventListener;
 import org.langricr.mcmachina.event.block.CBlockDamageEvent;
 import org.langricr.mcmachina.event.block.CBlockPlaceEvent;
 import org.langricr.mcmachina.event.block.CBlockRightClickEvent;
-import org.langricr.util.Coordinate;
+import org.langricr.util.WorldCoordinate;
 
 public class MMBlockListener extends BlockListener {
 	public void onBlockDamage( BlockDamageEvent bde ) {
 		if ( bde.getDamageLevel() == BlockDamageLevel.BROKEN && bde.getBlock().getType() == Material.GLOWSTONE ) {
-			Construct construct = ConstructManager.getInstance().getConstruct( new Coordinate( bde.getBlock() ) );
+			Construct construct = ConstructManager.getInstance().getConstruct( new WorldCoordinate( bde.getBlock() ) );
 			
 			if ( construct != null )
 				ConstructManager.getInstance().destroyConstruct( construct );
@@ -43,15 +43,13 @@ public class MMBlockListener extends BlockListener {
 	}
 	
 	public void onBlockRightClick( BlockRightClickEvent brce ) {
-		CBlockRightClickEvent cbrce = new CBlockRightClickEvent( brce );
-		
-		if ( brce.getBlockAgainst().getType().equals( Material.GLOWSTONE ) && brce.getItemInHand().getType().equals( Material.GLOWSTONE_DUST ) ) {
-			Coordinate target = new Coordinate( brce.getBlockAgainst() );
+		if ( brce.getBlock().getType() == Material.GLOWSTONE && brce.getItemInHand().getType() == Material.GLOWSTONE_DUST ) {
+			WorldCoordinate coord = new WorldCoordinate( brce.getBlock() );
 			
-			if ( ConstructManager.getInstance().getConstruct( target ) != null )
+			if ( ConstructManager.getInstance().getConstruct( coord ) != null )
 				return;
 			
-			Blueprint blueprint = BlueprintManager.getInstance().scanCoordinate( new Coordinate( brce.getBlockAgainst() ) );
+			Blueprint blueprint = BlueprintManager.getInstance().scanCoordinate( coord );
 			
 			if ( blueprint == null )
 				return;
@@ -61,8 +59,10 @@ public class MMBlockListener extends BlockListener {
 			if ( clazz == null )
 				return;
 			
-			ConstructManager.getInstance().createConstruct( target, clazz );
+			ConstructManager.getInstance().createConstruct( coord, clazz );
 		} else {
+			CBlockRightClickEvent cbrce = new CBlockRightClickEvent( brce );
+			
 			EventListener.getInstance().callEvent( cbrce );
 		}
 	}

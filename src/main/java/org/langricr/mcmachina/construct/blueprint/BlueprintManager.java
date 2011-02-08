@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.langricr.mcmachina.McMachina;
-import org.langricr.util.Coordinate;
+import org.langricr.util.WorldCoordinate;
 
 public class BlueprintManager {
 	private static BlueprintManager _instance = new BlueprintManager();
@@ -50,7 +50,7 @@ public class BlueprintManager {
 		System.out.println( "Loaded " + blueprints.size() + " blueprints." );
 	}
 	
-	public synchronized Blueprint scanCoordinate( Coordinate coord ) {
+	public synchronized Blueprint scanCoordinate( WorldCoordinate coord ) {
 		for ( Blueprint blueprint : blueprints ) {
 			System.out.println( "Checking: " + blueprint.getClassname() );
 			
