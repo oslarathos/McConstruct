@@ -62,15 +62,15 @@ public class ConstructManager {
 			while ( ( line = br.readLine() ) != null ) {
 				// Get the X coordinate
 				if ( line.startsWith( "X=" ) )
-					x = Integer.parseInt( line.substring( line.indexOf( "=" ) ).trim() );
+					x = Integer.parseInt( line.substring( line.indexOf( "=" ) + 1 ).trim() );
 				
 				// Get the Y coordinate
 				if ( line.startsWith( "Y=" ) )
-					y = Integer.parseInt( line.substring( line.indexOf( "=" ) ).trim() );
+					y = Integer.parseInt( line.substring( line.indexOf( "=" ) + 1 ).trim() );
 				
 				// Get the Z coordinate
 				if ( line.startsWith( "Z=" ) )
-					z = Integer.parseInt( line.substring( line.indexOf( "=" ) ).trim() );
+					z = Integer.parseInt( line.substring( line.indexOf( "=" ) + 1 ).trim() );
 				
 				// Get the world
 				if ( line.startsWith( "World=" ) )
