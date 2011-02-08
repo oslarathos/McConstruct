@@ -9,8 +9,10 @@ import org.langricr.mcmachina.construct.Construct;
 import org.langricr.mcmachina.event.Event.Type;
 import org.langricr.mcmachina.event.block.CBlockDamageEvent;
 import org.langricr.mcmachina.event.block.CBlockPlaceEvent;
+import org.langricr.mcmachina.event.block.CBlockRightClickEvent;
 import org.langricr.mcmachina.event.construct.ConstructCreateEvent;
 import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
+import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
 import org.langricr.mcmachina.event.construct.ConstructEvent;
 import org.langricr.mcmachina.event.construct.ConstructLoadEvent;
 import org.langricr.mcmachina.event.construct.ConstructSaveEvent;
@@ -55,6 +57,9 @@ public class EventListener {
 				case CONSTRUCT_DELETE:
 					construct.onDelete( ( ConstructDeleteEvent ) event );
 					break;
+				case CONSTRUCT_DESTROY:
+					construct.onDestroy( ( ConstructDestroyEvent ) event );
+					break;
 				case CONSTRUCT_LOAD:
 					construct.onLoad( ( ConstructLoadEvent ) event );
 					break;
@@ -66,6 +71,9 @@ public class EventListener {
 					break;
 				case BLOCK_PLACED:
 					construct.onBlockPlaced( ( CBlockPlaceEvent ) event );
+					break;
+				case BLOCK_RIGHTCLICKED:
+					construct.onBlockRightClicked( ( CBlockRightClickEvent ) event );
 					break;
 			}
 		}

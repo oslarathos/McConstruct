@@ -54,9 +54,8 @@ public class Blueprint {
 			// Getting the block.
 			Block block = Utils.getBlockAt( core.offset( point ) );
 			
-			if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) ) {
+			if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) )
 				return false;
-			}
 		}
 		
 		return true;

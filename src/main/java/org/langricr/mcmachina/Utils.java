@@ -1,8 +1,12 @@
 package org.langricr.mcmachina;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.langricr.util.WorldCoordinate;
 
 public class Utils {
@@ -30,5 +34,16 @@ public class Utils {
 	
 	public static Location toLocation( WorldCoordinate coord ) {
 		return toLocation( getBlockAt( coord ) );
+	}
+	
+	public static List< Player > getPlayersInRange( WorldCoordinate coord, double range ) {
+		List< Player > players = new ArrayList< Player >();
+		
+		for ( Player player : McMachina.getInstance().getServer().getOnlinePlayers() ) {
+			if ( coord.distanceTo( new WorldCoordinate( player.getLocation() ) ) <= range )
+				players.add( player );
+		}
+		
+		return players;
 	}
 }

@@ -16,6 +16,7 @@ import org.langricr.mcmachina.listeners.MMBlockListener;
 
 public class McMachina extends JavaPlugin {
 	private static McMachina instance = null;
+	public static final boolean debugging = true;
 	
 	public static McMachina getInstance() {
 		return instance;
@@ -35,10 +36,11 @@ public class McMachina extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		ConstructManager.getInstance().saveAllConstructs();
+		ConstructManager.getInstance().saveAllConstructs( true );
 	}
 
 	public void onEnable() {
+		System.out.println( "McMachina Version " + getDescription().getVersion() );
 		PluginManager pm = getServer().getPluginManager();
 		
 		pm.registerEvent( Type.BLOCK_PLACED, blockListener, Priority.High, this );

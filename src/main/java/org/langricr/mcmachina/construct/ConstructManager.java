@@ -14,7 +14,6 @@ import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
 import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
 import org.langricr.mcmachina.event.construct.ConstructLoadEvent;
 import org.langricr.mcmachina.event.construct.ConstructSaveEvent;
-import org.langricr.util.Coordinate;
 import org.langricr.util.WorldCoordinate;
 
 public class ConstructManager {
@@ -24,7 +23,7 @@ public class ConstructManager {
 		return _instance;
 	}
 	
-	private final File folder = new File( McMachina.getInstance().getDataFolder(), "Data" );
+	private final File folder = new File( McMachina.getInstance().getDataFolder(), "Save" );
 	private final File data = new File( folder, "Data" );
 	private Map< WorldCoordinate, Construct > constructs = new HashMap< WorldCoordinate, Construct >();
 	
@@ -42,7 +41,8 @@ public class ConstructManager {
 	
 	public synchronized void loadAllConstructs() {
 		for ( File file : folder.listFiles() ) {
-			loadConstruct( file );
+			if ( !( file.isDirectory() ) )
+				loadConstruct( file );
 		}
 	}
 	
@@ -109,13 +109,13 @@ public class ConstructManager {
 		}
 	}
 
-	public synchronized void saveAllConstructs() {
+	public synchronized void saveAllConstructs( boolean skipEvents) {
 		for ( Construct construct : constructs.values() ) {
-			saveConstruct( construct );
+			saveConstruct( construct, skipEvents );
 		}
 	}
 	
-	public synchronized void saveConstruct( Construct construct ) {
+	public synchronized void saveConstruct( Construct construct, boolean skipEvent ) {
 		try {
 			// Defining the file based on the constructs UUID.
 			File file = new File( folder, construct.getUUID() + ".txt" );
@@ -124,16 +124,18 @@ public class ConstructManager {
 			if ( file.delete() || !( file.exists() ) )
 				file.createNewFile();
 			
-			// We'll create the event first
-			ConstructSaveEvent cde = new ConstructSaveEvent( construct, new File( data, file.getName() + ".ini" ) );
-			
-			// And call all listeners
-			EventListener.getInstance().callEvent( cde );
-			
-			// This allows the construct to cancel itself from saving
-			if ( cde.isCancelled() )
-				return;
-			
+			// We'll process the event first.
+			if (  !( skipEvent ) ) {
+				ConstructSaveEvent cde = new ConstructSaveEvent( construct, new File( data, file.getName() + ".ini" ) );
+				
+				// And call all listeners
+				EventListener.getInstance().callEvent( cde );
+				
+				// This allows the construct to cancel itself from saving
+				if ( cde.isCancelled() )
+					return;
+			}
+
 			// We'll create a print writer
 			PrintWriter pw = new PrintWriter( file );
 			
@@ -152,14 +154,14 @@ public class ConstructManager {
 		}
 	}
 	
-	public synchronized void createConstruct( Coordinate coord, Class<?> clazz ) {
+	public synchronized void createConstruct( WorldCoordinate coord, Class<?> clazz ) {
 		try {
 			// We'll make sure the class is actually a construct
 			if ( !( Construct.class.isAssignableFrom( clazz ) ) )
 				throw new Exception( "Construct is not assignable from " + clazz.getName() );
 			
 			// We'll create the construct
-			Construct construct = ( Construct ) clazz.getConstructor( Coordinate.class ).newInstance( coord );
+			Construct construct = ( Construct ) clazz.getConstructor( WorldCoordinate.class ).newInstance( coord );
 			
 			// Create the construct create event.
 			ConstructCreateEvent cce = new ConstructCreateEvent( construct );

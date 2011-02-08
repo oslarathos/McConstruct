@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.langricr.mcmachina.event.block.CBlockDamageEvent;
 import org.langricr.mcmachina.event.block.CBlockPlaceEvent;
+import org.langricr.mcmachina.event.block.CBlockRightClickEvent;
 import org.langricr.mcmachina.event.construct.ConstructCreateEvent;
 import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
 import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
@@ -40,4 +41,6 @@ public class Construct {
 	public void onBlockDamaged( CBlockDamageEvent bde ) {}
 	
 	public void onBlockPlaced( CBlockPlaceEvent bpe ) {}
+	
+	public void onBlockRightClicked( CBlockRightClickEvent cbrce ) {}
 }

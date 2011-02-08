@@ -52,8 +52,6 @@ public class BlueprintManager {
 	
 	public synchronized Blueprint scanCoordinate( WorldCoordinate coord ) {
 		for ( Blueprint blueprint : blueprints ) {
-			System.out.println( "Checking: " + blueprint.getClassname() );
-			
 			if ( blueprint.isValid( coord ) )
 				return blueprint;
 		}

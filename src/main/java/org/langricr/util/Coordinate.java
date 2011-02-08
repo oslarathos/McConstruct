@@ -64,6 +64,14 @@ public class Coordinate implements Serializable, Cloneable {
 		_z = z;
 	}
 	
+	public double distanceTo( int x, int y, int z ) {
+		return Math.sqrt( Math.pow( Math.abs( x - getX() ), 2.0D ) + Math.pow( Math.abs( y - getY() ), 2.0D ) + Math.pow( Math.abs( z - getZ() ), 2.0D ) );
+	}
+	
+	public double distanceTo( Coordinate coord ) {
+		return distanceTo( coord.getX(), coord.getY(), coord.getZ() );
+	}
+	
 	public boolean equals( Object o ) {
 		if ( o == null ) return false;
 		if ( !( Coordinate.class.isAssignableFrom( o.getClass() ) ) ) return false;

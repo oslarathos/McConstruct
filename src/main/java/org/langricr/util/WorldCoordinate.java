@@ -1,5 +1,6 @@
 package org.langricr.util;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 public class WorldCoordinate extends Coordinate {
@@ -7,10 +8,16 @@ public class WorldCoordinate extends Coordinate {
 	
 	private String _world;
 	
-	public WorldCoordinate( String world, int x, int y, int z) {
+	public WorldCoordinate( String world, int x, int y, int z ) {
 		super( x, y, z );
 		
 		_world = world;
+	}
+	
+	public WorldCoordinate( Location location ) {
+		super( location.getBlockX(), location.getBlockY(), location.getBlockZ() );
+		
+		_world = location.getWorld().getName();
 	}
 
 	public WorldCoordinate( Block block ) {
@@ -26,17 +33,8 @@ public class WorldCoordinate extends Coordinate {
 	}
 	
 	public WorldCoordinate offset( int x, int y, int z ) {
-		return offset( getWorld(), getX() + x, getY() + y, getZ() + z );
+		return new WorldCoordinate( getWorld(), getX() + x, getY() + y, getZ() + z );
 	}
-	
-	public WorldCoordinate offset( String world, int x, int y, int z ) {
-		return new WorldCoordinate( world, getX() + x, getY() + y, getZ() + z );
-	}
-	
-	public WorldCoordinate offset( WorldCoordinate coord ) {
-		return offset( coord.getX(), coord.getY(), coord.getZ() );
-	}
-	
 	public WorldCoordinate offset( Coordinate coord ) {
 		return offset( coord.getX(), coord.getY(), coord.getZ() );
 	}
@@ -55,5 +53,9 @@ public class WorldCoordinate extends Coordinate {
 		code += getWorld().hashCode();
 		
 		return code;
+	}
+	
+	public String toString() {
+		return getWorld() + ":" + getX() + "," + getY() + "," + getZ();
 	}
 }
