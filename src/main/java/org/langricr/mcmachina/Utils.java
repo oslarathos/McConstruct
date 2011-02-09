@@ -47,7 +47,7 @@ public class Utils {
 		int x = ( loc.getBlockX() - ( range / 2 ) ) + rand.nextInt( range );
 		int z = ( loc.getBlockZ() - ( range / 2 ) ) + rand.nextInt( range );
 		
-		return new Location( loc.getWorld(), x, loc.getWorld().getHighestBlockYAt( x, z ), z );
+		return new Location( loc.getWorld(), x, loc.getY(), z );
 	}
 	
 	public static List< Player > getPlayersInRange( WorldCoordinate coord, double range ) {

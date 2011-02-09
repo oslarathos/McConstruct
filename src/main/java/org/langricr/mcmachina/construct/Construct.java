@@ -14,7 +14,7 @@ import org.langricr.util.WorldCoordinate;
 
 public class Construct {
 	private final WorldCoordinate core;
-	private final UUID uuid = UUID.randomUUID();
+	private UUID uuid = UUID.randomUUID();
 	
 	public Construct( WorldCoordinate core ) {
 		this.core = core;
@@ -26,6 +26,10 @@ public class Construct {
 	
 	public final UUID getUUID() {
 		return uuid;
+	}
+	
+	public final void setUUID( UUID uuid ) {
+		this.uuid = uuid;
 	}
 	
 	public void onCreate( ConstructCreateEvent cce ) {}

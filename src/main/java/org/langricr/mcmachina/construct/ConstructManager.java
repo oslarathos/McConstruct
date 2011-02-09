@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.langricr.mcmachina.McMachina;
 import org.langricr.mcmachina.construct.blueprint.Blueprint;
@@ -57,7 +58,7 @@ public class ConstructManager {
 			// And then create the variables to hold the information
 			String line = null;
 			int x = 0, y = 0, z = 0;
-			String world = null;
+			String world = null, uuid = null;
 			Class< ? > clazz = null;
 			
 			// We'll then go through the file
@@ -77,6 +78,9 @@ public class ConstructManager {
 				// Get the world
 				if ( line.startsWith( "World=" ) )
 					world = line.substring( line.indexOf( "=" ) + 1 ).trim();
+				
+				if ( line.startsWith( "UUID=" ) )
+					uuid = line.substring( line.indexOf( "=" ) + 1 ).trim();
 				
 				// And finally the class
 				if ( line.startsWith( "Class=" ) )
@@ -103,6 +107,9 @@ public class ConstructManager {
 			
 			// And create the construct
 			Construct c = ( Construct ) clazz.getConstructor( WorldCoordinate.class ).newInstance( coord );
+			
+			// Set the UUID
+			c.setUUID( UUID.fromString( uuid ) );
 			
 			// We'll then create an event to load the construct, this allows the construct to do some additional loading.
 			ConstructLoadEvent cle = new ConstructLoadEvent( c, new File( data, file.getName() + ".ini" ) );
@@ -156,6 +163,7 @@ public class ConstructManager {
 			pw.println( "Y=" + construct.getCore().getY() );
 			pw.println( "Z=" + construct.getCore().getZ() );
 			pw.println( "World=" + construct.getCore().getWorldName() );
+			pw.println( "UUID=" + construct.getUUID().toString() );
 			pw.println( "Class=" + construct.getClass().getName() );
 			
 			// Then flush the stream and close it.
