@@ -23,6 +23,8 @@ public class MMBlockListener extends BlockListener {
 		if ( bde.getDamageLevel() == BlockDamageLevel.BROKEN && bde.getBlock().getType() == Material.GLOWSTONE ) {
 			Construct construct = ConstructManager.getInstance().getConstruct( new WorldCoordinate( bde.getBlock() ) );
 			
+			
+			
 			if ( construct != null )
 				ConstructManager.getInstance().destroyConstruct( construct );
 		}

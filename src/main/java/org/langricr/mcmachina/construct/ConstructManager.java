@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.langricr.mcmachina.McMachina;
+import org.langricr.mcmachina.construct.blueprint.Blueprint;
+import org.langricr.mcmachina.construct.blueprint.BlueprintManager;
 import org.langricr.mcmachina.event.EventListener;
 import org.langricr.mcmachina.event.construct.ConstructCreateEvent;
 import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
@@ -92,6 +94,13 @@ public class ConstructManager {
 			if ( constructs.containsKey( coord ) )
 				return;
 			
+			// We'll scan the coordinate to make sure the construct can still fit.
+			Blueprint blueprint = BlueprintManager.getInstance().getBlueprint( clazz.getName() );
+			
+			// We can no longer fit the construct into that location.
+			if ( blueprint == null || blueprint.isValid( coord ) )
+				return;
+			
 			// And create the construct
 			Construct c = ( Construct ) clazz.getConstructor( WorldCoordinate.class ).newInstance( coord );
 			
@@ -132,8 +141,11 @@ public class ConstructManager {
 				EventListener.getInstance().callEvent( cde );
 				
 				// This allows the construct to cancel itself from saving
-				if ( cde.isCancelled() )
+				if ( cde.isCancelled() ) {
+					file.delete();
+					
 					return;
+				}
 			}
 
 			// We'll create a print writer
@@ -186,6 +198,8 @@ public class ConstructManager {
 		EventListener.getInstance().callEvent( cde );
 		
 		if ( !( cde.isCancelled() ) ) {
+			new File( folder, construct.getUUID() + ".txt" ).delete();
+			
 			constructs.remove( construct.getCore() );
 			
 			EventListener.getInstance().unregisterConstruct( construct );
