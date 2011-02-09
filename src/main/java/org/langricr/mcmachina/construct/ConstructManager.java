@@ -155,7 +155,7 @@ public class ConstructManager {
 			pw.println( "X=" + construct.getCore().getX() );
 			pw.println( "Y=" + construct.getCore().getY() );
 			pw.println( "Z=" + construct.getCore().getZ() );
-			pw.println( "World=" + construct.getCore().getWorld() );
+			pw.println( "World=" + construct.getCore().getWorldName() );
 			pw.println( "Class=" + construct.getClass().getName() );
 			
 			// Then flush the stream and close it.

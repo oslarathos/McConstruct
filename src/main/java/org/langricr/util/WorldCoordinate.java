@@ -24,7 +24,7 @@ public class WorldCoordinate extends Coordinate {
 		this( block.getWorld().getName(), block.getX(), block.getY(), block.getZ() );
 	}
 	
-	public String getWorld() {
+	public String getWorldName() {
 		return _world;
 	}
 	
@@ -33,7 +33,7 @@ public class WorldCoordinate extends Coordinate {
 	}
 	
 	public WorldCoordinate offset( int x, int y, int z ) {
-		return new WorldCoordinate( getWorld(), getX() + x, getY() + y, getZ() + z );
+		return new WorldCoordinate( getWorldName(), getX() + x, getY() + y, getZ() + z );
 	}
 	public WorldCoordinate offset( Coordinate coord ) {
 		return offset( coord.getX(), coord.getY(), coord.getZ() );
@@ -50,12 +50,12 @@ public class WorldCoordinate extends Coordinate {
 		int code = 0;
 		
 		code += super.hashCode();
-		code += getWorld().hashCode();
+		code += getWorldName().hashCode();
 		
 		return code;
 	}
 	
 	public String toString() {
-		return getWorld() + ":" + getX() + "," + getY() + "," + getZ();
+		return getWorldName() + ":" + getX() + "," + getY() + "," + getZ();
 	}
 }

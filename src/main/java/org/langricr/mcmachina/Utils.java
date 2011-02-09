@@ -13,7 +13,7 @@ import org.langricr.util.WorldCoordinate;
 
 public class Utils {
 	public static Block getBlockAt( WorldCoordinate coord ) {
-		World world = getWorld( coord.getWorld(), null );
+		World world = getWorld( coord.getWorldName(), null );
 		
 		if ( world == null )
 			return null;
