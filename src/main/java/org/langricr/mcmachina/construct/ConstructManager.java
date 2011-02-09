@@ -38,10 +38,32 @@ public class ConstructManager {
 			data.mkdir();
 	}
 	
+	/**
+	 *	Returns the folder that contains all critical construct save data.
+	 * 	@return The folder containing all construct save files.
+	 */
 	public final File getFolder() {
 		return folder;
 	}
 	
+	/**
+	 * Unloads all constructs.
+	 */
+	public synchronized void unloadAllConstructs() {
+		
+	}
+	
+	/**
+	 * Unloads the construct, essentially a save and remove method before the plugin is disabled.
+	 * @param construct The construct to be unloaded
+	 */
+	public synchronized void unloadConstruct( Construct construct ) {
+		
+	}
+	
+	/**
+	 * 
+	 */
 	public synchronized void loadAllConstructs() {
 		for ( File file : folder.listFiles() ) {
 			if ( !( file.isDirectory() ) )
@@ -49,6 +71,9 @@ public class ConstructManager {
 		}
 	}
 	
+	/**
+	 * @param file
+	 */
 	public synchronized void loadConstruct( File file ) {
 		try {
 			// We'll create the reader objects
@@ -125,12 +150,19 @@ public class ConstructManager {
 		}
 	}
 
+	/**
+	 * @param skipEvents
+	 */
 	public synchronized void saveAllConstructs( boolean skipEvents) {
 		for ( Construct construct : constructs.values() ) {
 			saveConstruct( construct, skipEvents );
 		}
 	}
 	
+	/**
+	 * @param construct
+	 * @param skipEvent
+	 */
 	public synchronized void saveConstruct( Construct construct, boolean skipEvent ) {
 		try {
 			// Defining the file based on the constructs UUID.
@@ -174,6 +206,10 @@ public class ConstructManager {
 		}
 	}
 	
+	/**
+	 * @param coord
+	 * @param clazz
+	 */
 	public synchronized void createConstruct( WorldCoordinate coord, Class<?> clazz ) {
 		try {
 			// We'll make sure the class is actually a construct
@@ -200,6 +236,9 @@ public class ConstructManager {
 		}
 	}
 	
+	/**
+	 * @param construct
+	 */
 	public synchronized void deleteConstruct( Construct construct ) {
 		ConstructDeleteEvent cde = new ConstructDeleteEvent( construct );
 		
@@ -214,6 +253,9 @@ public class ConstructManager {
 		}
 	}
 	
+	/**
+	 * @param construct
+	 */
 	public synchronized void destroyConstruct( Construct construct ) {
 		ConstructDestroyEvent cde = new ConstructDestroyEvent( construct );
 		
@@ -223,6 +265,10 @@ public class ConstructManager {
 			deleteConstruct( construct );
 	}
 	
+	/**
+	 * @param coord
+	 * @return
+	 */
 	public synchronized Construct getConstruct( WorldCoordinate coord ) {
 		return constructs.get( coord );
 	}
