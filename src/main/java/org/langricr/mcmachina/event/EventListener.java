@@ -52,10 +52,10 @@ public class EventListener {
 		for ( Construct construct : _listeners.get( event.getType() ) ) {
 			switch ( event.getType() ) {
 				case CONSTRUCT_CREATE:
-					construct.onCreate( ( ConstructCreateEvent ) event );
+					construct.onConstructCreated( ( ConstructCreateEvent ) event );
 					break;
 				case CONSTRUCT_DELETE:
-					construct.onDelete( ( ConstructDeleteEvent ) event );
+					construct.onConstructDeleted( ( ConstructDeleteEvent ) event );
 					break;
 				case CONSTRUCT_DESTROY:
 					construct.onDestroy( ( ConstructDestroyEvent ) event );

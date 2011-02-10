@@ -32,9 +32,9 @@ public class Construct {
 		this.uuid = uuid;
 	}
 	
-	public void onCreate( ConstructCreateEvent cce ) {}
+	public void onConstructCreated( ConstructCreateEvent cce ) {}
 	
-	public void onDelete( ConstructDeleteEvent cde ) {}
+	public void onConstructDeleted( ConstructDeleteEvent cde ) {}
 	
 	public void onDestroy( ConstructDestroyEvent cde ) {}
 	

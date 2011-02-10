@@ -5,6 +5,7 @@ import org.langricr.mcmachina.event.Event;
 
 public class ConstructEvent extends Event {
 	private final Construct _construct;
+	private boolean cancelled = false;
 	
 	public ConstructEvent( Type type, Construct construct ) {
 		super( type );
@@ -16,5 +17,11 @@ public class ConstructEvent extends Event {
 		return _construct;
 	}
 
+	public boolean isCancelled() {
+		return cancelled;
+	}
 	
+	public void setCancelled( boolean state )  {
+		cancelled = state;
+	}
 }

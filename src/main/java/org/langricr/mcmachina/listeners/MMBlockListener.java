@@ -61,7 +61,7 @@ public class MMBlockListener extends BlockListener {
 			if ( clazz == null )
 				return;
 			
-			ConstructManager.getInstance().createConstruct( coord, clazz );
+			ConstructManager.getInstance().createConstruct( clazz, coord );
 		} else {
 			CBlockRightClickEvent cbrce = new CBlockRightClickEvent( brce );
 			

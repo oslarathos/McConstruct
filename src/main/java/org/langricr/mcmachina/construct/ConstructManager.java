@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -17,11 +18,16 @@ import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
 import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
 import org.langricr.mcmachina.event.construct.ConstructLoadEvent;
 import org.langricr.mcmachina.event.construct.ConstructSaveEvent;
+import org.langricr.mcmachina.event.construct.ConstructUnloadEvent;
 import org.langricr.util.WorldCoordinate;
 
 public class ConstructManager {
 	private static ConstructManager _instance = new ConstructManager();
 	
+	/**
+	 * Used to retrieve the construct manager.
+	 * @return instance the construct manager
+	 */
 	public static ConstructManager getInstance() {
 		return _instance;
 	}
@@ -47,22 +53,38 @@ public class ConstructManager {
 	}
 	
 	/**
-	 * Unloads all constructs.
+	 * Unloads all currently loaded constructs.
+	 * <br />
+	 * <i>Called by the plugin when the plugin is being disabled.</i>
 	 */
 	public synchronized void unloadAllConstructs() {
-		
+		// Calling all constructs in an arraylist to avoid concurrent modifications when removing the constructs.
+		for ( Construct c : new ArrayList< Construct >( constructs.values() ) ) {
+			unloadConstruct( c );
+		}
 	}
 	
 	/**
-	 * Unloads the construct, essentially a save and remove method before the plugin is disabled.
+	 * Unloads the construct, essentially a save and remove method, calls a ConstructSaveEvent if not cancelled.
 	 * @param construct The construct to be unloaded
 	 */
 	public synchronized void unloadConstruct( Construct construct ) {
+		ConstructUnloadEvent cue = new ConstructUnloadEvent( construct );
 		
+		EventListener.getInstance().callEvent( cue );
+		
+		if ( cue.isCancelled() )
+			return;
+		
+		saveConstruct( construct );
+		
+		constructs.remove( construct.getCore() );
 	}
 	
 	/**
-	 * 
+	 *	Attempts to load all saved constructs.
+	 * 	<br />
+	 * 	<i>Called by the plugin when the plugin is being enabled.</i>
 	 */
 	public synchronized void loadAllConstructs() {
 		for ( File file : folder.listFiles() ) {
@@ -72,7 +94,8 @@ public class ConstructManager {
 	}
 	
 	/**
-	 * @param file
+	 * Attempts to load the construct from the file, if cancelled the 
+	 * @param file The file from which to load the construct.
 	 */
 	public synchronized void loadConstruct( File file ) {
 		try {
@@ -142,53 +165,61 @@ public class ConstructManager {
 			// And call it
 			EventListener.getInstance().callEvent( cle );
 			
-			// We'll add the construct only if the loading event is not canceled.
-			if ( !( cle.isCancelled() ) )
-				constructs.put( coord, c );
+			// We'll unregister the construct if the event has been cancelled.
+			if (cle.isCancelled() ) {
+				EventListener.getInstance().unregisterConstruct( c );
+				
+				return;
+			}
+			
+			constructs.put( coord, c );
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * @param skipEvents
+	 *  Attempts to save all currently loaded constructs.
 	 */
-	public synchronized void saveAllConstructs( boolean skipEvents) {
+	public synchronized void saveAllConstructs() {
 		for ( Construct construct : constructs.values() ) {
-			saveConstruct( construct, skipEvents );
+			saveConstruct( construct );
 		}
 	}
 	
 	/**
-	 * @param construct
-	 * @param skipEvent
+	 * 	Attempts to save a construct to the disk.
+	 * 	<br />
+	 *	Creates the construct file to hold the information pertaining to a construct directly.
+	 *	Calls a ConstructSaveEvent with an optional related file to store additional information pertaining to a construct's data.
+	 *	<br />
+	 *  Cancelling will not alter either of the two files.
+	 * 	@param construct The construct to be saved.
 	 */
-	public synchronized void saveConstruct( Construct construct, boolean skipEvent ) {
+	public synchronized void saveConstruct( Construct construct ) {
 		try {
-			// Defining the file based on the constructs UUID.
-			File file = new File( folder, construct.getUUID() + ".txt" );
+			// Defining the files based on the constructs UUID.
+			File saveFile = new File( folder, construct.getUUID() + ".txt" );
+			File dataFile = new File( data, saveFile.getName() + ".ini" );
 			
-			// Recreating the file
-			if ( file.delete() || !( file.exists() ) )
-				file.createNewFile();
+			ConstructSaveEvent cde = new ConstructSaveEvent( construct, dataFile );
 			
-			// We'll process the event first.
-			if (  !( skipEvent ) ) {
-				ConstructSaveEvent cde = new ConstructSaveEvent( construct, new File( data, file.getName() + ".ini" ) );
+			// And call all listeners
+			EventListener.getInstance().callEvent( cde );
+			
+			// This allows the construct to cancel itself from saving
+			if ( cde.isCancelled() ) {
 				
-				// And call all listeners
-				EventListener.getInstance().callEvent( cde );
-				
-				// This allows the construct to cancel itself from saving
-				if ( cde.isCancelled() ) {
-					file.delete();
-					
-					return;
-				}
+				return;
 			}
+			
+			// Recreating the save file
+			if ( saveFile.delete() || !( saveFile.exists() ) )
+				saveFile.createNewFile();
+			
 
 			// We'll create a print writer
-			PrintWriter pw = new PrintWriter( file );
+			PrintWriter pw = new PrintWriter( saveFile );
 			
 			// We'll write out the coordinates and class
 			pw.println( "X=" + construct.getCore().getX() );
@@ -207,10 +238,13 @@ public class ConstructManager {
 	}
 	
 	/**
+	 * Attempts to create a construct using the specified class at the specified coordinate.
+	 * <br />
+	 * <i>Called when attempting to create a construct, cancelling will call a ConstructDeleteEvent afterwards.</i>
 	 * @param coord
 	 * @param clazz
 	 */
-	public synchronized void createConstruct( WorldCoordinate coord, Class<?> clazz ) {
+	public synchronized void createConstruct( Class<?> clazz, WorldCoordinate coord ) {
 		try {
 			// We'll make sure the class is actually a construct
 			if ( !( Construct.class.isAssignableFrom( clazz ) ) )
@@ -219,25 +253,27 @@ public class ConstructManager {
 			// We'll create the construct
 			Construct construct = ( Construct ) clazz.getConstructor( WorldCoordinate.class ).newInstance( coord );
 			
+			// and add it to the list.
+			constructs.put( construct.getCore(), construct );
 			// Create the construct create event.
 			ConstructCreateEvent cce = new ConstructCreateEvent( construct );
 			
 			// Call the event
 			EventListener.getInstance().callEvent( cce );
 			
-			// Delete it if cancelled or add it if not.
-			if ( cce.isCancelled() ) {
+			// Delete the construct if cancelled.
+			if ( cce.isCancelled() )
 				deleteConstruct( construct );
-			} else {
-				constructs.put( construct.getCore(), construct );
-			}
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * @param construct
+	 * Attempts to delete the construct from the game.
+	 * <br />
+	 * If it is not can cancelled, it will delete the save file, remove the construct from the list and unhook all of it's listeners.
+	 * @param construct The construct to be deleted.
 	 */
 	public synchronized void deleteConstruct( Construct construct ) {
 		ConstructDeleteEvent cde = new ConstructDeleteEvent( construct );
@@ -254,7 +290,10 @@ public class ConstructManager {
 	}
 	
 	/**
-	 * @param construct
+	 * Used to destroy a construct, if this event is not cancelled it will then attempt to delete the construct.
+	 * <br />
+	 * <i>Called when a construct has a block removed from it that belongs to it's blueprint, cancelling will cancel the block from being destroyed.</i>
+	 * @param construct The construct to be destroyed
 	 */
 	public synchronized void destroyConstruct( Construct construct ) {
 		ConstructDestroyEvent cde = new ConstructDestroyEvent( construct );
@@ -266,8 +305,9 @@ public class ConstructManager {
 	}
 	
 	/**
-	 * @param coord
-	 * @return
+	 * Attempts to return the construct located at that coordinate.
+	 * @param coord The coordinate to check
+	 * @return Construct The construct at that coordinate if any.
 	 */
 	public synchronized Construct getConstruct( WorldCoordinate coord ) {
 		return constructs.get( coord );
