@@ -1,11 +1,11 @@
-package org.langricr.mcmachina.construct;
+package org.langricr.mcconstruct.construct;
 
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.langricr.mcmachina.McMachina;
+import org.langricr.mcconstruct.McConstruct;
 import org.langricr.util.FileClassLoader;
 
 public class ConstructLoader {
@@ -15,7 +15,7 @@ public class ConstructLoader {
 		return _instance;
 	}
 	
-	private final File folder = new File( McMachina.getInstance().getDataFolder(), "Classes" );
+	private final File folder = new File( McConstruct.getInstance().getDataFolder(), "Classes" );
 	private Map< String, Class< ? > > classes = new HashMap< String, Class< ? > >();
 	private FileClassLoader urlcl = null;
 	

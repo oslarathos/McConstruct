@@ -1,9 +1,9 @@
-package org.langricr.mcmachina.event.block;
+package org.langricr.mcconstruct.event.block;
 
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.BlockEvent;
-import org.langricr.mcmachina.event.Event;
+import org.langricr.mcconstruct.event.Event;
 
 public class CBlockEvent extends Event implements Cancellable {
 	private boolean state;

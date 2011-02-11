@@ -1,4 +1,4 @@
-package org.langricr.mcmachina.construct.blueprint;
+package org.langricr.mcconstruct.construct.blueprint;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.langricr.mcmachina.Utils;
+import org.langricr.mcconstruct.Utils;
 import org.langricr.util.Coordinate;
 import org.langricr.util.WorldCoordinate;
 

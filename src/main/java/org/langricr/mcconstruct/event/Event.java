@@ -1,4 +1,4 @@
-package org.langricr.mcmachina.event;
+package org.langricr.mcconstruct.event;
 
 public abstract class Event {
 	private final Type _type;

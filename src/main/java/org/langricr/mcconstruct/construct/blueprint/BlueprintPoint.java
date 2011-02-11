@@ -1,4 +1,4 @@
-package org.langricr.mcmachina.construct.blueprint;
+package org.langricr.mcconstruct.construct.blueprint;
 
 import org.bukkit.Material;
 import org.langricr.util.Coordinate;

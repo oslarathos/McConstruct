@@ -1,21 +1,21 @@
-package org.langricr.mcmachina.event;
+package org.langricr.mcconstruct.event;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import org.langricr.mcmachina.construct.Construct;
-import org.langricr.mcmachina.event.Event.Type;
-import org.langricr.mcmachina.event.block.CBlockDamageEvent;
-import org.langricr.mcmachina.event.block.CBlockPlaceEvent;
-import org.langricr.mcmachina.event.block.CBlockRightClickEvent;
-import org.langricr.mcmachina.event.construct.ConstructCreateEvent;
-import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
-import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
-import org.langricr.mcmachina.event.construct.ConstructEvent;
-import org.langricr.mcmachina.event.construct.ConstructLoadEvent;
-import org.langricr.mcmachina.event.construct.ConstructSaveEvent;
+import org.langricr.mcconstruct.construct.Construct;
+import org.langricr.mcconstruct.event.Event.Type;
+import org.langricr.mcconstruct.event.block.CBlockDamageEvent;
+import org.langricr.mcconstruct.event.block.CBlockPlaceEvent;
+import org.langricr.mcconstruct.event.block.CBlockRightClickEvent;
+import org.langricr.mcconstruct.event.construct.ConstructCreateEvent;
+import org.langricr.mcconstruct.event.construct.ConstructDeleteEvent;
+import org.langricr.mcconstruct.event.construct.ConstructDestroyEvent;
+import org.langricr.mcconstruct.event.construct.ConstructEvent;
+import org.langricr.mcconstruct.event.construct.ConstructLoadEvent;
+import org.langricr.mcconstruct.event.construct.ConstructSaveEvent;
 
 public class EventListener {
 	private static EventListener _instance = new EventListener();
@@ -58,13 +58,13 @@ public class EventListener {
 					construct.onConstructDeleted( ( ConstructDeleteEvent ) event );
 					break;
 				case CONSTRUCT_DESTROY:
-					construct.onDestroy( ( ConstructDestroyEvent ) event );
+					construct.onConstructDestroyed( ( ConstructDestroyEvent ) event );
 					break;
 				case CONSTRUCT_LOAD:
-					construct.onLoad( ( ConstructLoadEvent ) event );
+					construct.onConstructLoad( ( ConstructLoadEvent ) event );
 					break;
 				case CONSTRUCT_SAVE:
-					construct.onSave( ( ConstructSaveEvent ) event );
+					construct.onConstructSave( ( ConstructSaveEvent ) event );
 					break;
 				case BLOCK_DAMAGED:
 					construct.onBlockDamaged( ( CBlockDamageEvent ) event );

@@ -1,4 +1,4 @@
-package org.langricr.mcmachina.construct;
+package org.langricr.mcconstruct.construct;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,16 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.langricr.mcmachina.McMachina;
-import org.langricr.mcmachina.construct.blueprint.Blueprint;
-import org.langricr.mcmachina.construct.blueprint.BlueprintManager;
-import org.langricr.mcmachina.event.EventListener;
-import org.langricr.mcmachina.event.construct.ConstructCreateEvent;
-import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
-import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
-import org.langricr.mcmachina.event.construct.ConstructLoadEvent;
-import org.langricr.mcmachina.event.construct.ConstructSaveEvent;
-import org.langricr.mcmachina.event.construct.ConstructUnloadEvent;
+import org.langricr.mcconstruct.McConstruct;
+import org.langricr.mcconstruct.construct.blueprint.Blueprint;
+import org.langricr.mcconstruct.construct.blueprint.BlueprintManager;
+import org.langricr.mcconstruct.event.EventListener;
+import org.langricr.mcconstruct.event.construct.ConstructCreateEvent;
+import org.langricr.mcconstruct.event.construct.ConstructDeleteEvent;
+import org.langricr.mcconstruct.event.construct.ConstructDestroyEvent;
+import org.langricr.mcconstruct.event.construct.ConstructLoadEvent;
+import org.langricr.mcconstruct.event.construct.ConstructSaveEvent;
+import org.langricr.mcconstruct.event.construct.ConstructUnloadEvent;
 import org.langricr.util.WorldCoordinate;
 
 public class ConstructManager {
@@ -32,7 +32,7 @@ public class ConstructManager {
 		return _instance;
 	}
 	
-	private final File folder = new File( McMachina.getInstance().getDataFolder(), "Save" );
+	private final File folder = new File( McConstruct.getInstance().getDataFolder(), "Save" );
 	private final File data = new File( folder, "Data" );
 	private Map< WorldCoordinate, Construct > constructs = new HashMap< WorldCoordinate, Construct >();
 	
@@ -255,6 +255,7 @@ public class ConstructManager {
 			
 			// and add it to the list.
 			constructs.put( construct.getCore(), construct );
+			
 			// Create the construct create event.
 			ConstructCreateEvent cce = new ConstructCreateEvent( construct );
 			
@@ -280,13 +281,14 @@ public class ConstructManager {
 		
 		EventListener.getInstance().callEvent( cde );
 		
-		if ( !( cde.isCancelled() ) ) {
-			new File( folder, construct.getUUID() + ".txt" ).delete();
-			
-			constructs.remove( construct.getCore() );
-			
-			EventListener.getInstance().unregisterConstruct( construct );
-		}
+		if ( cde.isCancelled() )
+			return;
+		
+		new File( folder, construct.getUUID() + ".txt" ).delete();
+		
+		constructs.remove( construct.getCore() );
+		
+		EventListener.getInstance().unregisterConstruct( construct );
 	}
 	
 	/**
@@ -295,13 +297,16 @@ public class ConstructManager {
 	 * <i>Called when a construct has a block removed from it that belongs to it's blueprint, cancelling will cancel the block from being destroyed.</i>
 	 * @param construct The construct to be destroyed
 	 */
-	public synchronized void destroyConstruct( Construct construct ) {
+	public synchronized ConstructDestroyEvent destroyConstruct( Construct construct ) {
 		ConstructDestroyEvent cde = new ConstructDestroyEvent( construct );
 		
 		EventListener.getInstance().callEvent( cde );
 		
-		if ( !( cde.isCancelled() ) )
+		if ( !( cde.isCancelled() ) ) {
 			deleteConstruct( construct );
+		}
+		
+		return cde;
 	}
 	
 	/**

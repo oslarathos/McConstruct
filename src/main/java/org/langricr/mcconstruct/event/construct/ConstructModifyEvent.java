@@ -1,7 +1,7 @@
-package org.langricr.mcmachina.event.construct;
+package org.langricr.mcconstruct.event.construct;
 
 import org.bukkit.event.Cancellable;
-import org.langricr.mcmachina.construct.Construct;
+import org.langricr.mcconstruct.construct.Construct;
 
 public class ConstructModifyEvent extends ConstructEvent implements Cancellable {
 

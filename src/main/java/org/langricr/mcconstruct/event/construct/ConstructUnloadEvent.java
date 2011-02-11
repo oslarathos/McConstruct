@@ -1,6 +1,6 @@
-package org.langricr.mcmachina.event.construct;
+package org.langricr.mcconstruct.event.construct;
 
-import org.langricr.mcmachina.construct.Construct;
+import org.langricr.mcconstruct.construct.Construct;
 
 public class ConstructUnloadEvent extends ConstructEvent {
 	public ConstructUnloadEvent( Construct construct ) {

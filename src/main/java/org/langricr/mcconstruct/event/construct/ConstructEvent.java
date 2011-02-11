@@ -1,7 +1,7 @@
-package org.langricr.mcmachina.event.construct;
+package org.langricr.mcconstruct.event.construct;
 
-import org.langricr.mcmachina.construct.Construct;
-import org.langricr.mcmachina.event.Event;
+import org.langricr.mcconstruct.construct.Construct;
+import org.langricr.mcconstruct.event.Event;
 
 public class ConstructEvent extends Event {
 	private final Construct _construct;

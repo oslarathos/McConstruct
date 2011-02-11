@@ -1,4 +1,4 @@
-package org.langricr.mcmachina.event.block;
+package org.langricr.mcconstruct.event.block;
 
 import org.bukkit.event.block.BlockPlaceEvent;
 

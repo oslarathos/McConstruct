@@ -1,4 +1,4 @@
-package org.langricr.mcmachina;
+package org.langricr.mcconstruct;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +32,13 @@ public class Utils {
 	 * @return The world with that name or null if no world was found and no Environment given
 	 */
 	public static World getWorld( String name, Environment style ) {
-		for ( World world : McMachina.getInstance().getServer().getWorlds() ) {
+		for ( World world : McConstruct.getInstance().getServer().getWorlds() ) {
 			if ( world.getName().equals( name ) ) 
 				return world;
 		}
 		
 		if ( style != null )
-			return McMachina.getInstance().getServer().createWorld( name, style );
+			return McConstruct.getInstance().getServer().createWorld( name, style );
 		
 		return null;
 	}
@@ -85,7 +85,7 @@ public class Utils {
 	public static List< Player > getPlayersInRange( WorldCoordinate coord, double range ) {
 		List< Player > players = new ArrayList< Player >();
 		
-		for ( Player player : McMachina.getInstance().getServer().getOnlinePlayers() ) {
+		for ( Player player : McConstruct.getInstance().getServer().getOnlinePlayers() ) {
 			if ( coord.distanceTo( new WorldCoordinate( player.getLocation() ) ) <= range )
 				players.add( player );
 		}

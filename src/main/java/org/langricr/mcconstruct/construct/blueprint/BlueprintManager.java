@@ -1,10 +1,10 @@
-package org.langricr.mcmachina.construct.blueprint;
+package org.langricr.mcconstruct.construct.blueprint;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.langricr.mcmachina.McMachina;
+import org.langricr.mcconstruct.McConstruct;
 import org.langricr.util.WorldCoordinate;
 
 public class BlueprintManager {
@@ -14,7 +14,7 @@ public class BlueprintManager {
 		return _instance;
 	}
 	
-	private File folder = new File( McMachina.getInstance().getDataFolder(), "Blueprints" );
+	private File folder = new File( McConstruct.getInstance().getDataFolder(), "Blueprints" );
 	private List< Blueprint > blueprints = new ArrayList< Blueprint >();
 	
 	private BlueprintManager() {

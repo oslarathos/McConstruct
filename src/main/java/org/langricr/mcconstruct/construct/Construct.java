@@ -1,15 +1,15 @@
-package org.langricr.mcmachina.construct;
+package org.langricr.mcconstruct.construct;
 
 import java.util.UUID;
 
-import org.langricr.mcmachina.event.block.CBlockDamageEvent;
-import org.langricr.mcmachina.event.block.CBlockPlaceEvent;
-import org.langricr.mcmachina.event.block.CBlockRightClickEvent;
-import org.langricr.mcmachina.event.construct.ConstructCreateEvent;
-import org.langricr.mcmachina.event.construct.ConstructDeleteEvent;
-import org.langricr.mcmachina.event.construct.ConstructDestroyEvent;
-import org.langricr.mcmachina.event.construct.ConstructLoadEvent;
-import org.langricr.mcmachina.event.construct.ConstructSaveEvent;
+import org.langricr.mcconstruct.event.block.CBlockDamageEvent;
+import org.langricr.mcconstruct.event.block.CBlockPlaceEvent;
+import org.langricr.mcconstruct.event.block.CBlockRightClickEvent;
+import org.langricr.mcconstruct.event.construct.ConstructCreateEvent;
+import org.langricr.mcconstruct.event.construct.ConstructDeleteEvent;
+import org.langricr.mcconstruct.event.construct.ConstructDestroyEvent;
+import org.langricr.mcconstruct.event.construct.ConstructLoadEvent;
+import org.langricr.mcconstruct.event.construct.ConstructSaveEvent;
 import org.langricr.util.WorldCoordinate;
 
 public class Construct {
@@ -36,11 +36,11 @@ public class Construct {
 	
 	public void onConstructDeleted( ConstructDeleteEvent cde ) {}
 	
-	public void onDestroy( ConstructDestroyEvent cde ) {}
+	public void onConstructDestroyed( ConstructDestroyEvent cde ) {}
 	
-	public void onSave( ConstructSaveEvent cse ) {}
+	public void onConstructSave( ConstructSaveEvent cse ) {}
 	
-	public void onLoad( ConstructLoadEvent cle ) {}
+	public void onConstructLoad( ConstructLoadEvent cle ) {}
 	
 	public void onBlockDamaged( CBlockDamageEvent bde ) {}
 	
