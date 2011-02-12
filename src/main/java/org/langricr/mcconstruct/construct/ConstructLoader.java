@@ -60,7 +60,7 @@ public class ConstructLoader {
 		
 		Class< ? > clazz = fcl.createClass( file );
 		
-		System.out.print( "  OK... " + clazz.getName() );
+		System.out.println( "  OK... " + clazz.getName() );
 		
 		if ( Construct.class.isAssignableFrom( clazz ) )
 			classes.put( clazz.getName(), clazz );

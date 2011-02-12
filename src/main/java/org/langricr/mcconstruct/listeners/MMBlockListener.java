@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRightClickEvent;
+import org.langricr.mcconstruct.McConstruct;
 import org.langricr.mcconstruct.construct.Construct;
 import org.langricr.mcconstruct.construct.ConstructLoader;
 import org.langricr.mcconstruct.construct.ConstructManager;
@@ -25,7 +26,7 @@ public class MMBlockListener extends BlockListener {
 		
 		EventListener.getInstance().callEvent( cbde );
 		
-		if ( bde.isCancelled() ) {
+		if ( cbde.isCancelled() ) {
 			bde.setCancelled( true );
 		} else {
 			if ( bde.getDamageLevel().equals( BlockDamageLevel.BROKEN ) && bde.getBlock().getType().equals( Material.GLOWSTONE ) ) {
@@ -39,7 +40,6 @@ public class MMBlockListener extends BlockListener {
 					ConstructManager.getInstance().deleteConstruct( construct );
 			}
 		}
-		 
 	}
 	
 	public void onBlockPlace( BlockPlaceEvent bpe ) {
@@ -52,15 +52,23 @@ public class MMBlockListener extends BlockListener {
 	
 	public void onBlockRightClick( BlockRightClickEvent brce ) {
 		if ( brce.getBlock().getType() == Material.GLOWSTONE && brce.getItemInHand().getType() == Material.GLOWSTONE_DUST ) {
+			if ( McConstruct.debugging ) System.out.println( "Construct Creation: Start" );
+			
 			WorldCoordinate coord = new WorldCoordinate( brce.getBlock() );
 			
-			if ( ConstructManager.getInstance().getConstruct( coord ) != null )
+			if ( ConstructManager.getInstance().getConstruct( coord ) != null ) {
+				if ( McConstruct.debugging ) System.out.println( "Construct Creation: Coordinate is already registered." );
+				
 				return;
+			}
 			
 			Blueprint blueprint = BlueprintManager.getInstance().scanCoordinate( coord );
 			
-			if ( blueprint == null )
+			if ( blueprint == null ) {
+				if ( McConstruct.debugging ) System.out.println( "Construct Creation: No blueprint found.");
+				
 				return;
+			}
 			
 			Class< ? > clazz = ConstructLoader.getInstance().getClass( blueprint.getClassname() );
 			

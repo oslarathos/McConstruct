@@ -16,7 +16,8 @@ import org.langricr.mcconstruct.listeners.MMBlockListener;
 
 public class McConstruct extends JavaPlugin {
 	private static McConstruct instance = null;
-	public static final boolean debugging = true;
+	public static final boolean debugging = false;
+	private Thread hook = null;
 	
 	public static McConstruct getInstance() {
 		return instance;
@@ -33,14 +34,29 @@ public class McConstruct extends JavaPlugin {
 			folder.mkdir();
 		
 		instance = this;
+		
+		hook = new Thread( 
+			new Runnable() {
+				public void run() {
+					System.out.println( "SHUTDOWN: Saving all constructs!" );
+					ConstructManager.getInstance().saveAllConstructs();
+				}
+			}
+		);
 	}
 	
 	public void onDisable() {
+		Runtime.getRuntime().removeShutdownHook( hook );
+		
 		ConstructManager.getInstance().saveAllConstructs();
 	}
 
 	public void onEnable() {
 		System.out.println( "McMachina Version " + getDescription().getVersion() );
+		
+		System.out.println( "Registering Shutdown Hook" );
+		Runtime.getRuntime().addShutdownHook( hook );
+
 		PluginManager pm = getServer().getPluginManager();
 		
 		pm.registerEvent( Type.BLOCK_PLACED, blockListener, Priority.High, this );
@@ -55,6 +71,8 @@ public class McConstruct extends JavaPlugin {
 		System.out.println( "\nStartup" );
 		ConstructLoader.getInstance().reloadAllClasses();
 		BlueprintManager.getInstance().reloadBlueprints();
-		ConstructManager.getInstance().loadAllConstructs();
+		ConstructManager.getInstance().reloadAllConstructs();
+		
+		
 	}
 }

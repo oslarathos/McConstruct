@@ -85,11 +85,15 @@ public class ConstructManager {
 	 * 	<br />
 	 * 	<i>Called by the plugin when the plugin is being enabled.</i>
 	 */
-	public synchronized void loadAllConstructs() {
+	public synchronized void reloadAllConstructs() {
+		System.out.println( "Reloading all constructs." );
+		
 		for ( File file : folder.listFiles() ) {
 			if ( !( file.isDirectory() ) )
 				loadConstruct( file );
 		}
+		
+		System.out.println( "Reloaded " + constructs.size() + " constructs" );
 	}
 	
 	/**
@@ -142,16 +146,22 @@ public class ConstructManager {
 			WorldCoordinate coord = new WorldCoordinate( world, x, y, z );
 			
 			// Make sure another construct hasn't taken it's place
-			if ( constructs.containsKey( coord ) )
+			if ( constructs.containsKey( coord ) ) {
+				System.out.println( "CNA1... " + file.getName() );
+				
 				return;
+			}
 			
 			// We'll scan the coordinate to make sure the construct can still fit.
 			Blueprint blueprint = BlueprintManager.getInstance().getBlueprint( clazz.getName() );
 			
 			// We can no longer fit the construct into that location.
-			if ( blueprint == null || blueprint.isValid( coord ) )
-				return;
+			if ( blueprint == null || !( blueprint.isValid( coord ) ) ) {
+				System.out.println( "CNA2... " + file.getName() );
 			
+				return;
+			}
+		
 			// And create the construct
 			Construct c = ( Construct ) clazz.getConstructor( WorldCoordinate.class ).newInstance( coord );
 			
@@ -262,8 +272,11 @@ public class ConstructManager {
 			EventListener.getInstance().callEvent( cce );
 			
 			// Delete the construct if cancelled.
-			if ( cce.isCancelled() )
+			if ( cce.isCancelled() ) {
 				deleteConstruct( construct );
+			} else {
+				System.out.println( "Construct created: " + construct.toString() );
+			}
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}

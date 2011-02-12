@@ -47,4 +47,8 @@ public class Construct {
 	public void onBlockPlaced( CBlockPlaceEvent bpe ) {}
 	
 	public void onBlockRightClicked( CBlockRightClickEvent cbrce ) {}
+	
+	public String toString() {
+		return "(" + getClass().getName() + "|" + getCore().toString() + ")";
+	}
 }
