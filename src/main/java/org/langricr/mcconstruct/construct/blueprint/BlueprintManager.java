@@ -32,8 +32,6 @@ public class BlueprintManager {
 		blueprints.clear();
 		
 		for ( File file : folder.listFiles() ) {
-			System.out.print( "\t" );
-			
 			Blueprint blueprint = Blueprint.loadBlueprint( file );
 			
 			if ( blueprint != null ) {
@@ -44,7 +42,7 @@ public class BlueprintManager {
 				System.out.print( " BAD" );
 			}
 			
-			System.out.println( "... " + file.getName() );
+			System.out.println( ". " + blueprint.toString() );
 		}
 		
 		System.out.println( "Loaded " + blueprints.size() + " blueprints." );

@@ -9,7 +9,7 @@ public class BlueprintPoint extends Coordinate {
 	private Material _material = null;
 	
 	public BlueprintPoint( int x, int y, int z, Material material ) {
-		super(x, y, z);
+		super( x, y, z );
 		
 		_material = material;
 	}

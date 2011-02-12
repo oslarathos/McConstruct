@@ -17,7 +17,7 @@ public class ConstructLoader {
 	
 	private final File folder = new File( McConstruct.getInstance().getDataFolder(), "Classes" );
 	private Map< String, Class< ? > > classes = new HashMap< String, Class< ? > >();
-	private FileClassLoader urlcl = null;
+	private FileClassLoader fcl = null;
 	
 	private ConstructLoader() {
 		if ( !( folder.exists() ) )
@@ -28,13 +28,13 @@ public class ConstructLoader {
 		return folder;
 	}
 	
-	public synchronized void reloadClasses() {
+	public synchronized void reloadAllClasses() {
 		System.out.println( "Reloading construct classes." );
 		
 		classes.clear();
 		
 		try {
-			urlcl = new FileClassLoader( new URL[] { folder.toURI().toURL() }, Construct.class.getClassLoader() );
+			fcl = new FileClassLoader( new URL[] { folder.toURI().toURL() }, Construct.class.getClassLoader() );
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			
@@ -42,15 +42,11 @@ public class ConstructLoader {
 		}
 		
 		for ( File file : folder.listFiles() ) {
-			System.out.print( "\t" );
-			
 			try {
 				reloadClass( file );
 			} catch ( Exception e ) {
-				System.out.print( e.getMessage() );
+				System.out.println( " BAD... " + file.getName() );
 			}
-			
-			System.out.println( "... " + file.getName() );
 		}
 		
 		System.out.println( "Loaded " + classes.size() + " classes." );
@@ -58,20 +54,13 @@ public class ConstructLoader {
 	
 	public synchronized void reloadClass( File file ) throws Exception {		
 		if ( file.isDirectory() || !( file.getName().endsWith( ".class" ) ) ) {
-			System.out.print( "SKIP" );
-		
+			System.out.println( "SKIP... " + file.getName() );
 			return;
 		}
 		
-		Class< ? > clazz = urlcl.createClass( file );
+		Class< ? > clazz = fcl.createClass( file );
 		
-		if ( clazz == null ) {
-			System.out.print( "NULL" );
-		
-			return;
-		}
-		
-		System.out.print( "  OK" );
+		System.out.print( "  OK... " + clazz.getName() );
 		
 		if ( Construct.class.isAssignableFrom( clazz ) )
 			classes.put( clazz.getName(), clazz );

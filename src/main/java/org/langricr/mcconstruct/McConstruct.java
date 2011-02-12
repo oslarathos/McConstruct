@@ -53,7 +53,7 @@ public class McConstruct extends JavaPlugin {
 		System.out.println( BlueprintManager.getInstance().getFolder().getPath() );
 		System.out.println( ConstructManager.getInstance().getFolder().getPath() );
 		System.out.println( "\nStartup" );
-		ConstructLoader.getInstance().reloadClasses();
+		ConstructLoader.getInstance().reloadAllClasses();
 		BlueprintManager.getInstance().reloadBlueprints();
 		ConstructManager.getInstance().loadAllConstructs();
 	}

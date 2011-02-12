@@ -21,22 +21,24 @@ import org.langricr.util.WorldCoordinate;
 
 public class MMBlockListener extends BlockListener {
 	public void onBlockDamage( BlockDamageEvent bde ) {
-		if ( bde.getDamageLevel().equals( BlockDamageLevel.BROKEN ) && bde.getBlock().getType().equals( Material.GLOWSTONE ) ) {
-			Construct construct = ConstructManager.getInstance().getConstruct( new WorldCoordinate( bde.getBlock() ) );
-			
-			if ( construct != null ) {
-				ConstructManager.getInstance().destroyConstruct( construct );
-			
-				return;
-			}
-		}
-		
 		CBlockDamageEvent cbde = new CBlockDamageEvent( bde );
 		
 		EventListener.getInstance().callEvent( cbde );
 		
-		if ( bde.isCancelled() )
+		if ( bde.isCancelled() ) {
 			bde.setCancelled( true );
+		} else {
+			if ( bde.getDamageLevel().equals( BlockDamageLevel.BROKEN ) && bde.getBlock().getType().equals( Material.GLOWSTONE ) ) {
+				Construct construct = ConstructManager.getInstance().getConstruct( new WorldCoordinate( bde.getBlock() ) );
+				
+				ConstructDestroyEvent cde = new ConstructDestroyEvent( construct );
+				
+				EventListener.getInstance().callEvent( cde );
+				
+				if ( !( cde.isCancelled() ) )
+					ConstructManager.getInstance().deleteConstruct( construct );
+			}
+		}
 		 
 	}
 	

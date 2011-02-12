@@ -15,7 +15,6 @@ import org.langricr.mcconstruct.construct.blueprint.BlueprintManager;
 import org.langricr.mcconstruct.event.EventListener;
 import org.langricr.mcconstruct.event.construct.ConstructCreateEvent;
 import org.langricr.mcconstruct.event.construct.ConstructDeleteEvent;
-import org.langricr.mcconstruct.event.construct.ConstructDestroyEvent;
 import org.langricr.mcconstruct.event.construct.ConstructLoadEvent;
 import org.langricr.mcconstruct.event.construct.ConstructSaveEvent;
 import org.langricr.mcconstruct.event.construct.ConstructUnloadEvent;
@@ -199,8 +198,8 @@ public class ConstructManager {
 	public synchronized void saveConstruct( Construct construct ) {
 		try {
 			// Defining the files based on the constructs UUID.
-			File saveFile = new File( folder, construct.getUUID() + ".txt" );
-			File dataFile = new File( data, saveFile.getName() + ".ini" );
+			File saveFile = getConstructFile( construct );
+			File dataFile = getConstructDateFile( construct );
 			
 			ConstructSaveEvent cde = new ConstructSaveEvent( construct, dataFile );
 			
@@ -292,29 +291,30 @@ public class ConstructManager {
 	}
 	
 	/**
-	 * Used to destroy a construct, if this event is not cancelled it will then attempt to delete the construct.
-	 * <br />
-	 * <i>Called when a construct has a block removed from it that belongs to it's blueprint, cancelling will cancel the block from being destroyed.</i>
-	 * @param construct The construct to be destroyed
-	 */
-	public synchronized ConstructDestroyEvent destroyConstruct( Construct construct ) {
-		ConstructDestroyEvent cde = new ConstructDestroyEvent( construct );
-		
-		EventListener.getInstance().callEvent( cde );
-		
-		if ( !( cde.isCancelled() ) ) {
-			deleteConstruct( construct );
-		}
-		
-		return cde;
-	}
-	
-	/**
 	 * Attempts to return the construct located at that coordinate.
 	 * @param coord The coordinate to check
 	 * @return Construct The construct at that coordinate if any.
 	 */
 	public synchronized Construct getConstruct( WorldCoordinate coord ) {
 		return constructs.get( coord );
+	}
+	
+	/**
+	 * Returns the file for the construct containing coordinates and location in the server, do not modify.
+	 * @param construct The construct to retrieve the data file for
+	 * @return The save file of the construct
+	 */
+	public synchronized File getConstructFile( Construct construct ) {
+		if ( construct == null )
+			return null;
+		
+		return new File( folder, construct.getUUID().toString() + ".txt" );
+	}
+	
+	public synchronized File getConstructDateFile( Construct construct ) {
+		if ( construct == null )
+			return null;
+		
+		return new File( data, getConstructFile( construct ).getName() + ".ini" );
 	}
 }

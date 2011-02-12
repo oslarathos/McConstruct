@@ -16,6 +16,7 @@ public class Blueprint {
 	private final File file;
 	private List< BlueprintPoint > points = new ArrayList< BlueprintPoint >();
 	private String classname = null;
+	private boolean rotatable = false;
 	
 	private Blueprint( File file, String className ) {
 		this.file = file;
@@ -30,6 +31,14 @@ public class Blueprint {
 		return classname;
 	}
 	
+	public boolean isRotatable() {
+		return rotatable;
+	}
+	
+	private void setRotatable( boolean state ) {
+		rotatable = state;
+	}
+	
 	public void addPoint( BlueprintPoint point ) {
 		if ( !( points.contains( point ) ) )
 			points.add( point );
@@ -37,7 +46,7 @@ public class Blueprint {
 	
 	public BlueprintPoint getPoint( Coordinate core, Block block ) {
 		for ( BlueprintPoint point : points ) {
-			if ( point.equals( core.getOffset( new Coordinate( block ) ) ) )
+			if ( point.equals( core.getOffset( new WorldCoordinate( block ) ) ) )
 				return point;
 		}
 		
@@ -78,8 +87,15 @@ public class Blueprint {
 			
 			// Reading the blueprint
 			while ( ( line = br.readLine() ) != null ) {
+				// Checking if the line declares the blueprint as rotatable
+				if ( line.equalsIgnoreCase( "[ROTATABLE]" ) ) {
+					blueprint.setRotatable( true );
+					
+					continue;
+				}
+				
 				// Checking if the line is a point
-				if ( !( line.startsWith( ":point(" ) ) && !( line.endsWith( ");" ) ) )
+				if ( !( line.startsWith( "[point(" ) ) && !( line.endsWith( ")]" ) ) )
 					continue;
 				
 				// Splitting the string
@@ -107,4 +123,9 @@ public class Blueprint {
 			return null;
 		}
 	}
+	
+	public String toString() {
+		return "Blueprint( " + getClassname() + ", " + points.size() + "pts, " + isRotatable() + " )";
+	}
+
 }
