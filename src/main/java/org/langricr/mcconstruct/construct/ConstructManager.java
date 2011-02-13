@@ -97,6 +97,9 @@ public class ConstructManager {
 	
 	public synchronized void loadAllConstructs() {
 		for ( File file : folder.listFiles() ) {
+			if ( file.isDirectory() )
+				continue;
+			
 			loadConstruct( file );
 		}
 	}

@@ -1,7 +1,9 @@
 package org.langricr.mcconstruct.listeners;
 
+import org.bukkit.Material;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.inventory.ItemStack;
 import org.langricr.mcconstruct.McConstruct;
 
 public class MMPlayerListener extends PlayerListener {
@@ -21,6 +23,15 @@ public class MMPlayerListener extends PlayerListener {
 			
 			if ( split[ 1 ].equalsIgnoreCase( "reload" ) ) {
 				McConstruct.getInstance().reload();
+				
+				return;
+			}
+			
+			if ( split[ 1 ].equalsIgnoreCase( "give" ) ) {
+				if ( split.length != 4 )
+					return;
+				
+				event.getPlayer().getInventory().addItem( new ItemStack( Material.valueOf( split[ 2 ] ), Integer.parseInt( split[ 3 ] ) ) );
 				
 				return;
 			}

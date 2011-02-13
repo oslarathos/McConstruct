@@ -12,5 +12,12 @@
   		<artifactId>bukkit</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  		<groupId>Permissions</groupId>
+  		<artifactId>Permissions</artifactId>
+  		<version>0.0.1</version>
+  		<scope>system</scope>
+  		<systemPath>C:\Users\User\Desktop\Downloads\Permissions\Permissions.jar</systemPath>
+  	</dependency>
   </dependencies>
 </project>
