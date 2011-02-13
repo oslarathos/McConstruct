@@ -30,6 +30,9 @@ public class MMBlockListener extends BlockListener {
 			bde.setCancelled( true );
 		} else {
 			if ( bde.getDamageLevel().equals( BlockDamageLevel.BROKEN ) && bde.getBlock().getType().equals( Material.GLOWSTONE ) ) {
+				if ( McConstruct.permissions != null && !( McConstruct.permissions.has( bde.getPlayer(), "construct.destroy" ) ) )
+					return;
+				
 				Construct construct = ConstructManager.getInstance().getConstruct( new WorldCoordinate( bde.getBlock() ) );
 				
 				ConstructDestroyEvent cde = new ConstructDestroyEvent( construct );

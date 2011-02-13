@@ -21,7 +21,7 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class McConstruct extends JavaPlugin {
 	private static McConstruct instance = null;
-	public static final boolean debugging = true;
+	public static final boolean debugging = false;
 	private Thread hook = null;
 	public static PermissionHandler permissions = null;
 	

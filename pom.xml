@@ -17,7 +17,7 @@
   		<artifactId>Permissions</artifactId>
   		<version>0.0.1</version>
   		<scope>system</scope>
-  		<systemPath>C:\Users\User\Desktop\Downloads\Permissions\Permissions.jar</systemPath>
+  		<systemPath>C:\Users\User\Desktop\Server\plugins\Permissions.jar</systemPath>
   	</dependency>
   </dependencies>
 </project>
