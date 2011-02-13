@@ -88,12 +88,17 @@ public class ConstructManager {
 	public synchronized void reloadAllConstructs() {
 		System.out.println( "Reloading all constructs." );
 		
-		for ( File file : folder.listFiles() ) {
-			if ( !( file.isDirectory() ) )
-				loadConstruct( file );
-		}
+		unloadAllConstructs();
+		
+		loadAllConstructs();
 		
 		System.out.println( "Reloaded " + constructs.size() + " constructs" );
+	}
+	
+	public synchronized void loadAllConstructs() {
+		for ( File file : folder.listFiles() ) {
+			loadConstruct( file );
+		}
 	}
 	
 	/**
@@ -296,7 +301,8 @@ public class ConstructManager {
 		if ( cde.isCancelled() )
 			return;
 		
-		new File( folder, construct.getUUID() + ".txt" ).delete();
+		getConstructFile( construct ).delete();
+		getConstructDateFile( construct ).delete();
 		
 		constructs.remove( construct.getCore() );
 		
