@@ -21,9 +21,6 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class McConstruct extends JavaPlugin {
 	private static McConstruct instance = null;
-	public static final boolean debugging = false;
-	private Thread hook = null;
-	public static PermissionHandler permissions = null;
 	
 	public static McConstruct getInstance() {
 		return instance;
@@ -31,6 +28,8 @@ public class McConstruct extends JavaPlugin {
 	
 	private MMBlockListener blockListener = new MMBlockListener();
 	private MMPlayerListener playerListener = new MMPlayerListener();
+	private Thread shutdownHook = null;
+	private PermissionHandler permissionHandler = null;
 	
 	public McConstruct(PluginLoader pluginLoader, Server server,
 			PluginDescriptionFile desc, File folder, File plugin,
@@ -42,18 +41,18 @@ public class McConstruct extends JavaPlugin {
 		
 		instance = this;
 		
-		hook = new Thread( 
+		shutdownHook = new Thread( 
 			new Runnable() {
 				public void run() {
-					System.out.println( "SHUTDOWN: Saving all constructs!" );
-					ConstructManager.getInstance().saveAllConstructs();
+					System.out.println( "SHUTDOWN: Unloading all constructs!" );
+					ConstructManager.getInstance().unloadAllConstructs();
 				}
 			}
 		);
 	}
 	
 	public void onDisable() {
-		Runtime.getRuntime().removeShutdownHook( hook );
+		Runtime.getRuntime().removeShutdownHook( shutdownHook );
 		
 		ConstructManager.getInstance().saveAllConstructs();
 	}
@@ -62,7 +61,7 @@ public class McConstruct extends JavaPlugin {
 		System.out.println( "McMachina Version " + getDescription().getVersion() );
 		
 		System.out.println( "Registering Shutdown Hook" );
-		Runtime.getRuntime().addShutdownHook( hook );
+		Runtime.getRuntime().addShutdownHook( shutdownHook );
 
 		PluginManager pm = getServer().getPluginManager();
 		
@@ -91,12 +90,16 @@ public class McConstruct extends JavaPlugin {
 	}
 	
 	public void setupPermissions() {
-		Plugin permissions = getServer().getPluginManager().getPlugin( "Permissions" );
+		Plugin permissionsPlugin = getServer().getPluginManager().getPlugin( "Permissions" );
 		
-		if ( permissions == null ) {
+		if ( permissionsPlugin == null ) {
 			System.out.println( "Permissions not enabled, free reign." );
 		} else {
-			McConstruct.permissions = ( ( Permissions ) permissions ).getHandler();
+			permissionHandler = ( ( Permissions ) permissionsPlugin ).getHandler();
 		}
+	}
+	
+	public PermissionHandler getPermissions() {
+		return permissionHandler;
 	}
 }

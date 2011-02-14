@@ -157,6 +157,8 @@ public class ConstructManager {
 			if ( constructs.containsKey( coord ) ) {
 				System.out.println( "CNA1... " + file.getName() );
 				
+				file.delete();
+				
 				return;
 			}
 			
@@ -167,6 +169,8 @@ public class ConstructManager {
 			if ( blueprint == null || !( blueprint.isValid( coord ) ) ) {
 				System.out.println( "CNA2... " + file.getName() );
 			
+				file.delete();
+				
 				return;
 			}
 		
@@ -297,6 +301,9 @@ public class ConstructManager {
 	 * @param construct The construct to be deleted.
 	 */
 	public synchronized void deleteConstruct( Construct construct ) {
+		if ( construct == null )
+			return;
+		
 		ConstructDeleteEvent cde = new ConstructDeleteEvent( construct );
 		
 		EventListener.getInstance().callEvent( cde );

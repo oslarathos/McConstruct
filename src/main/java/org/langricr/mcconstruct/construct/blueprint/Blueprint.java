@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.langricr.mcconstruct.McConstruct;
 import org.langricr.mcconstruct.Utils;
 import org.langricr.util.Coordinate;
 import org.langricr.util.WorldCoordinate;
@@ -64,11 +63,8 @@ public class Blueprint {
 			// Getting the block.
 			Block block = Utils.getBlockAt( core.offset( point ) );
 			
-			if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) ) {
-				if ( McConstruct.debugging ) System.out.println( getClassname() + "\n\t" + point.getMaterial().name() + " != " + block.getType().name() );
-				if ( McConstruct.debugging ) System.out.println( point.toString() + " - " + new WorldCoordinate( block ).toString() );
+			if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) )
 				return false;
-			}
 		}
 		
 		return true;

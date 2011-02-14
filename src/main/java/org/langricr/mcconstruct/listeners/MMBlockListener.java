@@ -20,6 +20,8 @@ import org.langricr.mcconstruct.event.block.CBlockRightClickEvent;
 import org.langricr.mcconstruct.event.construct.ConstructDestroyEvent;
 import org.langricr.util.WorldCoordinate;
 
+import com.nijiko.permissions.PermissionHandler;
+
 public class MMBlockListener extends BlockListener {
 	public void onBlockDamage( BlockDamageEvent bde ) {
 		CBlockDamageEvent cbde = new CBlockDamageEvent( bde );
@@ -30,8 +32,13 @@ public class MMBlockListener extends BlockListener {
 			bde.setCancelled( true );
 		} else {
 			if ( bde.getDamageLevel().equals( BlockDamageLevel.BROKEN ) && bde.getBlock().getType().equals( Material.GLOWSTONE ) ) {
-				if ( McConstruct.permissions != null && !( McConstruct.permissions.has( bde.getPlayer(), "construct.destroy" ) ) )
+				PermissionHandler p = McConstruct.getInstance().getPermissions();
+				
+				if ( p != null && !( p.has( bde.getPlayer(), "mcconstruct.alter.destroy" ) ) ) {
+					bde.setCancelled( true );
+					
 					return;
+				}
 				
 				Construct construct = ConstructManager.getInstance().getConstruct( new WorldCoordinate( bde.getBlock() ) );
 				
@@ -39,8 +46,13 @@ public class MMBlockListener extends BlockListener {
 				
 				EventListener.getInstance().callEvent( cde );
 				
-				if ( !( cde.isCancelled() ) )
-					ConstructManager.getInstance().deleteConstruct( construct );
+				if ( cde.isCancelled() ) {
+					bde.setCancelled( true );
+					
+					return;
+				}
+				
+				ConstructManager.getInstance().deleteConstruct( construct );
 			}
 		}
 	}
@@ -54,37 +66,52 @@ public class MMBlockListener extends BlockListener {
 	}
 	
 	public void onBlockRightClick( BlockRightClickEvent brce ) {
-		if ( brce.getBlock().getType() == Material.GLOWSTONE && brce.getItemInHand().getType() == Material.GLOWSTONE_DUST ) {
-			if ( McConstruct.debugging ) System.out.println( "Construct Creation: Start" );
+		PermissionHandler perms = McConstruct.getInstance().getPermissions();
+		
+		if ( perms != null && !( perms.has( brce.getPlayer(), "mcconstruct.alter.create" ) ) ) {
+			CBlockRightClickEvent cbrce = new CBlockRightClickEvent( brce );
 			
+			EventListener.getInstance().callEvent( cbrce );
+			
+			return;
+		} else if ( brce.getBlock().getType() == Material.GLOWSTONE && brce.getItemInHand().getType() == Material.GLOWSTONE_DUST ) {
+			// Getting the coordinate
 			WorldCoordinate coord = new WorldCoordinate( brce.getBlock() );
 			
+			// Checking if the coordinate exists.
 			if ( ConstructManager.getInstance().getConstruct( coord ) != null ) {
-				if ( McConstruct.debugging ) System.out.println( "Construct Creation: Coordinate is already registered." );
+				System.out.println( "Construct Creation: Coordinate is already registered." );
 				
 				return;
 			}
 			
+			// Getting the blueprint
 			Blueprint blueprint = BlueprintManager.getInstance().scanCoordinate( coord );
 			
+			// Checking if the blueprint exists.
 			if ( blueprint == null ) {
-				if ( McConstruct.debugging ) System.out.println( "Construct Creation: No blueprint found.");
+				System.out.println( "Construct Creation: No blueprint found.");
 				
 				return;
 			}
 			
+			// Getting the class of the blueprint
 			Class< ? > clazz = ConstructLoader.getInstance().getClass( blueprint.getClassname() );
 			
+			// Checking if the class exists.
 			if ( clazz == null ) {
 				System.out.println( "The blueprint for '" + blueprint.getClassname() +"' has no matching construct class loaded." );
 				
 				return;
 			}
 			
+			// Creating the construct
 			ConstructManager.getInstance().createConstruct( clazz, coord );
 		} else {
+			// Creating an event
 			CBlockRightClickEvent cbrce = new CBlockRightClickEvent( brce );
 			
+			// Calling an event
 			EventListener.getInstance().callEvent( cbrce );
 		}
 	}
