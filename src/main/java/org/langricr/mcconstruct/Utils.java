@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.langricr.util.WorldCoordinate;
 
@@ -18,7 +19,7 @@ public class Utils {
 	 * @return The block matching that coordinate.
 	 */
 	public static Block getBlockAt( WorldCoordinate coord ) {
-		World world = getWorld( coord.getWorldName(), null );
+		World world = getWorld( coord.getWorldName() );
 		
 		if ( world == null )
 			return null;
@@ -27,20 +28,37 @@ public class Utils {
 	}
 	
 	/**
-	 * @param name The name of the world
-	 * @param style The style of the world to create if the world does not exist, null will not create a new world.
-	 * @return The world with that name or null if no world was found and no Environment given
+	 * Attempts to retrieve a world with the specified name.
+	 * @param name The name of the world to be retrieved.
+	 * @return The world with the corresponding name, or null if there is no world or no name was given.
 	 */
-	public static World getWorld( String name, Environment style ) {
+	public static World getWorld( String name ) {
+		if ( name == null ) return null;
+		
 		for ( World world : McConstruct.getInstance().getServer().getWorlds() ) {
 			if ( world.getName().equals( name ) ) 
 				return world;
 		}
 		
-		if ( style != null )
-			return McConstruct.getInstance().getServer().createWorld( name, style );
-		
 		return null;
+	}
+	
+	/**
+	 * Attempts to create a world with the specified name.
+	 * @param name The name of the world to be created
+	 * @param style The type of world to be created.
+	 * @return The new world, the old world if the name is already in use, or null if either parameter is null.
+	 */
+	public static World createWorld( String name, Environment style ) {
+		if ( name == null || style == null )
+			return null;
+		
+		World world = getWorld( name );
+		
+		if ( world != null )
+			return world;
+		
+		return McConstruct.getInstance().getServer().createWorld( name, style );
 	}
 	
 	/**
@@ -53,7 +71,7 @@ public class Utils {
 	}
 	
 	/**
-	 * Attempts to convert a coordinate to a location.
+	 * Attempts to convert a WorldCoordinate to a Location.
 	 * @param coord The coordinate
 	 * @return The Location form of the coordinate.
 	 */
@@ -77,7 +95,7 @@ public class Utils {
 	}
 	
 	/**
-	 * Used to get players within the specified range of a coordinate.
+	 * Used to retrieve all players within the specified range of a coordinate.
 	 * @param coord The coordinate to check
 	 * @param range The range to get players around it in
 	 * @return A list of players within range.
@@ -91,5 +109,12 @@ public class Utils {
 		}
 		
 		return players;
+	}
+	
+	public static void clearSign( Sign sign ) {
+		sign.setLine( 0, "" );
+		sign.setLine( 1, "" );
+		sign.setLine( 2, "" );
+		sign.setLine( 3, "" );
 	}
 }

@@ -48,10 +48,12 @@ public class BlueprintManager {
 		System.out.println( "Loaded " + blueprints.size() + " blueprints." );
 	}
 	
-	public synchronized Blueprint scanCoordinate( WorldCoordinate coord ) {
+	public synchronized BlueprintValidationResult scanCoordinate( WorldCoordinate coord ) {
 		for ( Blueprint blueprint : blueprints ) {
-			if ( blueprint.isValid( coord ) )
-				return blueprint;
+			BlueprintValidationResult bvr = blueprint.isValid( coord );
+			
+			if ( bvr != null )
+				return bvr;
 		}
 		
 		return null;

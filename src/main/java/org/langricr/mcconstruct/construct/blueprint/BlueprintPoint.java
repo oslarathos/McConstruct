@@ -1,9 +1,9 @@
 package org.langricr.mcconstruct.construct.blueprint;
 
 import org.bukkit.Material;
-import org.langricr.util.Coordinate;
+import org.langricr.util.PolarCoordinate;
 
-public class BlueprintPoint extends Coordinate {
+public class BlueprintPoint extends PolarCoordinate {
 	private static final long serialVersionUID = 1L;
 
 	private Material _material = null;
@@ -12,6 +12,10 @@ public class BlueprintPoint extends Coordinate {
 		super( x, y, z );
 		
 		_material = material;
+	}
+	
+	public BlueprintPoint( PolarCoordinate point, Material material ) {
+		this( point.getX(), point.getY(), point.getZ(), material );
 	}
 	
 	public Material getMaterial() {

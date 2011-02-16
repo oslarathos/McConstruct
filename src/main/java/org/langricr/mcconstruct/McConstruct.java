@@ -22,6 +22,10 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 public class McConstruct extends JavaPlugin {
 	private static McConstruct instance = null;
 	
+	/**
+	 * Retrieves the currently running instance of McConstruct.
+	 * @return The current enabled instance of McConstruct
+	 */
 	public static McConstruct getInstance() {
 		return instance;
 	}
@@ -83,12 +87,18 @@ public class McConstruct extends JavaPlugin {
 		reload();
 	}
 	
+	/**
+	 * Attempts to reload all plugin assets: Classes, Blueprints and saved Constructs.
+	 */
 	public void reload() {
 		ConstructLoader.getInstance().reloadAllClasses();
 		BlueprintManager.getInstance().reloadBlueprints();
 		ConstructManager.getInstance().reloadAllConstructs();
 	}
 	
+	/**
+	 * Attempts to enable support for the Permissions plugin.
+	 */
 	public void setupPermissions() {
 		Plugin permissionsPlugin = getServer().getPluginManager().getPlugin( "Permissions" );
 		
@@ -99,6 +109,10 @@ public class McConstruct extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Attempts to retrieve the handler of the Permissions plugin, returns null if not enabled.
+	 * @return The PermissionHandler of the Permissions plugin.
+	 */
 	public PermissionHandler getPermissions() {
 		return permissionHandler;
 	}

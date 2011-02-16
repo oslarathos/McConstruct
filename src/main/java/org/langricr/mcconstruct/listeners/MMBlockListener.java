@@ -9,10 +9,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRightClickEvent;
 import org.langricr.mcconstruct.McConstruct;
 import org.langricr.mcconstruct.construct.Construct;
-import org.langricr.mcconstruct.construct.ConstructLoader;
 import org.langricr.mcconstruct.construct.ConstructManager;
-import org.langricr.mcconstruct.construct.blueprint.Blueprint;
 import org.langricr.mcconstruct.construct.blueprint.BlueprintManager;
+import org.langricr.mcconstruct.construct.blueprint.BlueprintValidationResult;
 import org.langricr.mcconstruct.event.EventListener;
 import org.langricr.mcconstruct.event.block.CBlockDamageEvent;
 import org.langricr.mcconstruct.event.block.CBlockPlaceEvent;
@@ -79,34 +78,18 @@ public class MMBlockListener extends BlockListener {
 			WorldCoordinate coord = new WorldCoordinate( brce.getBlock() );
 			
 			// Checking if the coordinate exists.
-			if ( ConstructManager.getInstance().getConstruct( coord ) != null ) {
-				System.out.println( "Construct Creation: Coordinate is already registered." );
-				
+			if ( ConstructManager.getInstance().getConstruct( coord ) != null )
 				return;
-			}
 			
-			// Getting the blueprint
-			Blueprint blueprint = BlueprintManager.getInstance().scanCoordinate( coord );
+			// Getting the blueprint result
+			BlueprintValidationResult bvr = BlueprintManager.getInstance().scanCoordinate( coord );
 			
 			// Checking if the blueprint exists.
-			if ( blueprint == null ) {
-				System.out.println( "Construct Creation: No blueprint found.");
-				
+			if ( bvr == null )
 				return;
-			}
-			
-			// Getting the class of the blueprint
-			Class< ? > clazz = ConstructLoader.getInstance().getClass( blueprint.getClassname() );
-			
-			// Checking if the class exists.
-			if ( clazz == null ) {
-				System.out.println( "The blueprint for '" + blueprint.getClassname() +"' has no matching construct class loaded." );
-				
-				return;
-			}
 			
 			// Creating the construct
-			ConstructManager.getInstance().createConstruct( clazz, coord );
+			ConstructManager.getInstance().createConstruct( bvr );
 		} else {
 			// Creating an event
 			CBlockRightClickEvent cbrce = new CBlockRightClickEvent( brce );

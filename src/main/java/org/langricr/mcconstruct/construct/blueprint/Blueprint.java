@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.langricr.mcconstruct.Utils;
 import org.langricr.util.Coordinate;
+import org.langricr.util.PolarCoordinate.Rotation;
 import org.langricr.util.WorldCoordinate;
 
 public class Blueprint {
@@ -57,17 +58,49 @@ public class Blueprint {
 		return points;
 	}
 	
-	public boolean isValid( WorldCoordinate core ) {
-		// Cycling through all points
-		for ( BlueprintPoint point : points ) {
-			// Getting the block.
-			Block block = Utils.getBlockAt( core.offset( point ) );
+	public BlueprintValidationResult isValid( WorldCoordinate core ) {
+		// If rotatable
+		if ( isRotatable() ) {
+			// Cycle through each of the four rotation values.
+			for ( Rotation rot : Rotation.values() ) {
+				// Create a boolean defaulting to true
+				boolean valid = true;
+				
+				// Cycle through each point
+				for ( BlueprintPoint point : getPoints() ) {
+					// Convert the point to the rotation
+					BlueprintPoint rot_point = new BlueprintPoint( point.rotate( rot ), point.getMaterial() );
+					
+					// Retrieve the block
+					Block block = Utils.getBlockAt( core.offset( rot_point ) );
+					
+					// Check the block to see if it matches.
+					if ( rot_point.getMaterial() != null && !( rot_point.getMaterial().equals( block.getType() ) ) ) {
+						valid = false;
+						
+						break;
+					}
+				}
+				
+				// If valid, return true
+				if ( valid )
+					return new BlueprintValidationResult( this, rot, core );
+			}
+		} else {
+			// Cycling through all points
+			for ( BlueprintPoint point : points ) {
+				// Getting the block.
+				Block block = Utils.getBlockAt( core.offset( point ) );
+				
+				// Check the block for a match.
+				if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) )
+					return null;
+			}
 			
-			if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) )
-				return false;
+			return new BlueprintValidationResult( this, Rotation.None, core );
 		}
 		
-		return true;
+		return null;
 	}
 	
 	public static Blueprint loadBlueprint( File file ) {

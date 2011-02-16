@@ -12,12 +12,14 @@ import java.util.UUID;
 import org.langricr.mcconstruct.McConstruct;
 import org.langricr.mcconstruct.construct.blueprint.Blueprint;
 import org.langricr.mcconstruct.construct.blueprint.BlueprintManager;
+import org.langricr.mcconstruct.construct.blueprint.BlueprintValidationResult;
 import org.langricr.mcconstruct.event.EventListener;
 import org.langricr.mcconstruct.event.construct.ConstructCreateEvent;
 import org.langricr.mcconstruct.event.construct.ConstructDeleteEvent;
 import org.langricr.mcconstruct.event.construct.ConstructLoadEvent;
 import org.langricr.mcconstruct.event.construct.ConstructSaveEvent;
 import org.langricr.mcconstruct.event.construct.ConstructUnloadEvent;
+import org.langricr.util.PolarCoordinate.Rotation;
 import org.langricr.util.WorldCoordinate;
 
 public class ConstructManager {
@@ -119,6 +121,7 @@ public class ConstructManager {
 			int x = 0, y = 0, z = 0;
 			String world = null, uuid = null;
 			Class< ? > clazz = null;
+			Rotation rotation = null;
 			
 			// We'll then go through the file
 			while ( ( line = br.readLine() ) != null ) {
@@ -138,6 +141,9 @@ public class ConstructManager {
 				if ( line.startsWith( "World=" ) )
 					world = line.substring( line.indexOf( "=" ) + 1 ).trim();
 				
+				if ( line.startsWith( "Rotation=" ) )
+					rotation = Rotation.valueOf( line.substring( line.indexOf( "=" ) + 1 ).trim() );
+				
 				if ( line.startsWith( "UUID=" ) )
 					uuid = line.substring( line.indexOf( "=" ) + 1 ).trim();
 				
@@ -151,10 +157,10 @@ public class ConstructManager {
 			fr.close();
 			
 			// We'll get the coordinate
-			WorldCoordinate coord = new WorldCoordinate( world, x, y, z );
+			WorldCoordinate core = new WorldCoordinate( world, x, y, z );
 			
 			// Make sure another construct hasn't taken it's place
-			if ( constructs.containsKey( coord ) ) {
+			if ( constructs.containsKey( core ) ) {
 				System.out.println( "CNA1... " + file.getName() );
 				
 				file.delete();
@@ -166,7 +172,7 @@ public class ConstructManager {
 			Blueprint blueprint = BlueprintManager.getInstance().getBlueprint( clazz.getName() );
 			
 			// We can no longer fit the construct into that location.
-			if ( blueprint == null || !( blueprint.isValid( coord ) ) ) {
+			if ( blueprint == null || blueprint.isValid( core ) == null ) {
 				System.out.println( "CNA2... " + file.getName() );
 			
 				file.delete();
@@ -175,7 +181,10 @@ public class ConstructManager {
 			}
 		
 			// And create the construct
-			Construct c = ( Construct ) clazz.getConstructor( WorldCoordinate.class ).newInstance( coord );
+			Class<?>[] classes = new Class<?>[] { WorldCoordinate.class, Rotation.class };
+			Object[] args = new Object[] { core, rotation };
+			
+			Construct c = ( Construct ) clazz.getConstructor( classes ).newInstance( args );
 			
 			// Set the UUID
 			c.setUUID( UUID.fromString( uuid ) );
@@ -193,7 +202,7 @@ public class ConstructManager {
 				return;
 			}
 			
-			constructs.put( coord, c );
+			constructs.put( core, c );
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
@@ -247,6 +256,7 @@ public class ConstructManager {
 			pw.println( "Y=" + construct.getCore().getY() );
 			pw.println( "Z=" + construct.getCore().getZ() );
 			pw.println( "World=" + construct.getCore().getWorldName() );
+			pw.println( "Rotation=" + construct.getRotation().name() );
 			pw.println( "UUID=" + construct.getUUID().toString() );
 			pw.println( "Class=" + construct.getClass().getName() );
 			
@@ -265,14 +275,27 @@ public class ConstructManager {
 	 * @param coord
 	 * @param clazz
 	 */
-	public synchronized void createConstruct( Class<?> clazz, WorldCoordinate coord ) {
+	public synchronized void createConstruct( BlueprintValidationResult bvr ) {
 		try {
+			// Checking for the class.
+			Class< ? > clazz = ConstructLoader.getInstance().getClass( bvr.getBlueprint().getClassname() );
+			
+			// If we get no class.
+			if ( clazz == null ) {
+				System.out.println( "The class '" + bvr.getBlueprint().getClassname() + "' has not been loaded and was requested by a blueprint." );
+				
+				return;
+			}
+			
 			// We'll make sure the class is actually a construct
 			if ( !( Construct.class.isAssignableFrom( clazz ) ) )
 				throw new Exception( "Construct is not assignable from " + clazz.getName() );
 			
 			// We'll create the construct
-			Construct construct = ( Construct ) clazz.getConstructor( WorldCoordinate.class ).newInstance( coord );
+			Class<?>[] classes = new Class<?>[] { WorldCoordinate.class, Rotation.class };
+			Object[] args = new Object[] { bvr.getCore(), bvr.getRotation() };
+			
+			Construct construct = ( Construct ) clazz.getConstructor( classes ).newInstance( args );
 			
 			// and add it to the list.
 			constructs.put( construct.getCore(), construct );
@@ -284,11 +307,8 @@ public class ConstructManager {
 			EventListener.getInstance().callEvent( cce );
 			
 			// Delete the construct if cancelled.
-			if ( cce.isCancelled() ) {
+			if ( cce.isCancelled() )
 				deleteConstruct( construct );
-			} else {
-				System.out.println( "Construct created: " + construct.toString() );
-			}
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
