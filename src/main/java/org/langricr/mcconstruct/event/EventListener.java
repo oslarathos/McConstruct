@@ -9,6 +9,7 @@ import org.langricr.mcconstruct.construct.Construct;
 import org.langricr.mcconstruct.event.Event.Type;
 import org.langricr.mcconstruct.event.block.CBlockDamageEvent;
 import org.langricr.mcconstruct.event.block.CBlockPlaceEvent;
+import org.langricr.mcconstruct.event.block.CBlockRedstoneEvent;
 import org.langricr.mcconstruct.event.block.CBlockRightClickEvent;
 import org.langricr.mcconstruct.event.construct.ConstructCreateEvent;
 import org.langricr.mcconstruct.event.construct.ConstructDeleteEvent;
@@ -75,6 +76,8 @@ public class EventListener {
 				case BLOCK_RIGHTCLICKED:
 					construct.onBlockRightClicked( ( CBlockRightClickEvent ) event );
 					break;
+				case BLOCK_REDSTONE:
+					construct.onBlockRedstone( ( CBlockRedstoneEvent ) event );
 			}
 		}
 		

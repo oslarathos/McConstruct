@@ -6,6 +6,7 @@ import org.bukkit.block.BlockDamageLevel;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.BlockRightClickEvent;
 import org.langricr.mcconstruct.McConstruct;
 import org.langricr.mcconstruct.construct.Construct;
@@ -15,6 +16,7 @@ import org.langricr.mcconstruct.construct.blueprint.BlueprintValidationResult;
 import org.langricr.mcconstruct.event.EventListener;
 import org.langricr.mcconstruct.event.block.CBlockDamageEvent;
 import org.langricr.mcconstruct.event.block.CBlockPlaceEvent;
+import org.langricr.mcconstruct.event.block.CBlockRedstoneEvent;
 import org.langricr.mcconstruct.event.block.CBlockRightClickEvent;
 import org.langricr.mcconstruct.event.construct.ConstructDestroyEvent;
 import org.langricr.util.WorldCoordinate;
@@ -97,5 +99,11 @@ public class MMBlockListener extends BlockListener {
 			// Calling an event
 			EventListener.getInstance().callEvent( cbrce );
 		}
+	}
+
+	public void onBlockRedstoneEvent( BlockRedstoneEvent bre ) {
+		CBlockRedstoneEvent cbre = new CBlockRedstoneEvent( bre );
+		
+		EventListener.getInstance().callEvent( cbre );
 	}
 }

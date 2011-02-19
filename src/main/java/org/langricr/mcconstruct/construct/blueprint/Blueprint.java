@@ -93,8 +93,11 @@ public class Blueprint {
 				Block block = Utils.getBlockAt( core.offset( point ) );
 				
 				// Check the block for a match.
-				if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) )
+				if ( point.getMaterial() != null && !( point.getMaterial().equals( block.getType() ) ) ) {
+					System.out.println( point.getMaterial().name() + " != " + block.getType().name() );
+					System.out.println( point.toString() );
 					return null;
+				}
 			}
 			
 			return new BlueprintValidationResult( this, Rotation.None, core );

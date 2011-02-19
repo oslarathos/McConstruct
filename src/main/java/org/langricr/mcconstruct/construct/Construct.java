@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.langricr.mcconstruct.event.block.CBlockDamageEvent;
 import org.langricr.mcconstruct.event.block.CBlockPlaceEvent;
+import org.langricr.mcconstruct.event.block.CBlockRedstoneEvent;
 import org.langricr.mcconstruct.event.block.CBlockRightClickEvent;
 import org.langricr.mcconstruct.event.construct.ConstructCreateEvent;
 import org.langricr.mcconstruct.event.construct.ConstructDeleteEvent;
@@ -102,6 +103,8 @@ public class Construct {
 	 * @param cbrce The event that fired.
 	 */
 	public void onBlockRightClicked( CBlockRightClickEvent cbrce ) {}
+	
+	public void onBlockRedstone( CBlockRedstoneEvent cbre ) {}
 	
 	public String toString() {
 		return "(" + getClass().getName() + "|" + getCore().toString() + ")";
